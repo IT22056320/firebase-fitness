@@ -10,6 +10,9 @@ export const AuthContextProvider = ({children})=>{
 
     useEffect(()=>{
          //onAuthStateChanged
+         setTimeout(()=>{
+            setIsAuthenticated(true);
+         },3000)
     },[])
 
     const login = async(email,password)=>{
@@ -49,4 +52,5 @@ export const useAuth = () =>{
     if(!value){
         throw new Error('useAuth must be wrapped inside AuthContextProvider')
     }
+    return value;
 }
