@@ -6,21 +6,18 @@ import HomeHeader from '../../components/HomeHeader'
 export default function _layout(){
     return(
         <Stack 
-        screenOptions={{
-            headerShown:false
-        }}
+        
         >
+ <Stack.Screen name="Home"  options={{
+          header: () => <HomeHeader />
+        }}/>
+
             <Stack.Screen name="exercises" options={{
                 presentation:'fullScreenModal'
             }}/>
-  
-          <Stack.Screen
-            name='Home'
-            options={{
-              header: () => <HomeHeader />
-            }} 
-          />
     
+
+         
           {/* Profile Screen */}
           <Stack.Screen
             name='profile'
