@@ -1,21 +1,15 @@
-import {View ,Text, Pressable} from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import React from 'react'
 import { useAuth } from '../context/AuthContext'
+import BottomNav from '../../components/BottomNav';
 
+export default function Home() {
+  const { logout, user } = useAuth();
 
-export default function Home(){
-
-    const {logout,user} =useAuth();
-    handleLogout = async()=>{
-        await logout();
-    }
-   // console.log('user data',user);
-    return (
-        <View style={{paddingTop:40,backgroundColor: 'red'}} >
-            <Text style={{textAlign:'center'}}>Home</Text>
-           <Pressable onPress={handleLogout}>
-            <Text>Sign Out</Text>
-           </Pressable>
-        </View>
-    )
+  console.log('user data: ', user);
+  return (
+    <View className='flex-1 bg-white'>
+      <BottomNav />
+    </View>
+  )
 }
