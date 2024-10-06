@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -12,45 +12,59 @@ export default function Home() {
   const router = useRouter();
 
   const handleSignOut = () => {
-    // Implement sign-out logic here, such as clearing tokens or navigating to the login page
     router.push('/SignIn');
+  };
+
+  // Navigate to Fitness Journal screen
+  const handleNavigateToFitnessJournal = () => {
+    router.push('/fitnessJournal');
   };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar style="dark" />
-
-      <View style={styles.headerContainer}>
-        <View style={styles.textContainer}>
-          <Text style={[styles.headerText, styles.neutralText]}>READY TO</Text>
-          <Text style={[styles.headerText, styles.highlightedText]}>WORKOUT</Text>
-        </View>
-        <View style={styles.avatarContainer}>
-          <Image
-            source={require('../../assets/images/avatar.png')}
-            style={styles.avatar}
-          />
-          <View style={styles.notificationIconContainer}>
-            <Ionicons name="notifications" size={hp(3)} color="gray" />
+      
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.headerContainer}>
+          <View style={styles.textContainer}>
+            <Text style={[styles.headerText, styles.neutralText]}>READY TO</Text>
+            <Text style={[styles.headerText, styles.highlightedText]}>WORKOUT</Text>
+          </View>
+          <View style={styles.avatarContainer}>
+            <Image
+              source={require('../../assets/images/avatar.png')}
+              style={styles.avatar}
+            />
+            <View style={styles.notificationIconContainer}>
+              <Ionicons name="notifications" size={hp(3)} color="gray" />
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* Sign-out button */}
-      <View style={styles.signOutContainer}>
-        <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Sign-out button */}
+        <View style={styles.signOutContainer}>
+          <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
+            <Text style={styles.signOutText}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Image slider component */}
-      <View>
-        <ImageSlider />
-      </View>
+        {/* Image slider component */}
+        <View>
+          <ImageSlider />
+        </View>
 
-      <View className="flex-1">
-        <BodyParts />
-      </View>
+        {/* Body Parts */}
+        <View style={{ flex: 1 }}>
+          <BodyParts />
+        </View>
+
+        {/* Fitness Journal Button */}
+        <View style={styles.fitnessJournalContainer}>
+          <TouchableOpacity onPress={handleNavigateToFitnessJournal} style={styles.fitnessJournalButton}>
+            <Text style={styles.fitnessJournalText}>Fitness Journal</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -113,5 +127,19 @@ const styles = StyleSheet.create({
   signOutText: {
     color: 'white',
     fontSize: hp(2),
+  },
+  fitnessJournalContainer: {
+    alignItems: 'center',
+    marginVertical: hp(2),
+  },
+  fitnessJournalButton: {
+    backgroundColor: '#10B981',
+    paddingVertical: hp(1.5),
+    paddingHorizontal: wp(5),
+    borderRadius: 10,
+  },
+  fitnessJournalText: {
+    color: 'white',
+    fontSize: hp(2.5),
   },
 });
