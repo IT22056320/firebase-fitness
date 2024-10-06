@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image as FilteredImage, Grayscale, Sepia, Invert } from 'react-native-image-filter-kit';
 import { useAuth } from '../../context/AuthContext';
 
-export default function AvatarCreator() {
+export default function AvatarC() {
   const [useAvatarMode, setUseAvatarMode] = useState(false); // To toggle avatar mode
   const { user } = useAuth();
 

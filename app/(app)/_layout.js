@@ -1,8 +1,14 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 import HomeHeader from '../../components/HomeHeader';
+import MeditationHome from '../(app)/MeditationHome';
+import MeditationDetails from '../(app)/MeditationDetails';
+import TimerSession from '../(app)/TimerSession';
+
 
 export default function _layout() {
+
+  
   return (
     <Stack>
       {/* Home screen */}
@@ -50,11 +56,33 @@ export default function _layout() {
 
       {/* Avatar Creator Screen */}
       <Stack.Screen
-        name="avatarCreator"
+        name="avatarC"
         options={{
           headerShown: false,
         }}
       />
+
+<Stack.Screen
+        name="MeditationHome"
+        options={{ title: 'Meditation' }}
+      />
+      <Stack.Screen
+        name="MeditationDetails"
+        options={{ title: 'Session Details' }}
+      />
+      <Stack.Screen
+        name="TimerSession"
+        options={{ title: 'Timer Session' }}
+      />
+
+
+{/* Saved Sessions Screen */}
+<Stack.Screen
+        name="SavedSessions"
+        
+        options={{ title: 'Saved Sessions' }}
+      />
+
     </Stack>
   );
 }

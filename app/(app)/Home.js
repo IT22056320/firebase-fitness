@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImageSlider from '../../components/ImageSlider';
 import BodyParts from '../../components/BodyParts';
 import { useRouter } from 'expo-router';
+import BottomNav from '../../components/BottomNav';
 
 export default function Home() {
   const router = useRouter();
@@ -65,6 +66,7 @@ export default function Home() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <BottomNav />
     </SafeAreaView>
   );
 }

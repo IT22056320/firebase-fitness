@@ -27,6 +27,9 @@ export default function HomeHeader() {
   const handleSettings = () => {
     router.push('settings');
   };  
+  const handleAvatar = async() => {
+    router.push('avatarCreator');
+  }
   const handleLogout = async() => {
     await logout();
   }
@@ -71,6 +74,13 @@ export default function HomeHeader() {
               action={handleSettings}
               value={null}
               icon={<Feather name='settings' size={hp(2.5)} color='#737373' />}
+            />
+            <Devider />
+            <MenuItem 
+              text='avatar'
+              action={handleAvatar}
+              value={null}
+              icon={<Feather name='user-check' size={hp(2.5)} color='#737373' />}
             />
             <Devider />
             <MenuItem 
