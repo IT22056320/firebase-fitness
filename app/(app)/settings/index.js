@@ -15,7 +15,7 @@ const Settings = ({ navigation }) => {
   };
 
   const handleAvatar = () =>{
-    router.push('avatarCreator');
+    router.push('settavatarCreator');
   }
   const handleProfile = () => {
     router.push('profile');
