@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,7 +9,7 @@ export default function ChallengesPage() {
   useEffect(() => {
     loadChallenges();
   }, []);
-  
+
   const loadChallenges = async () => {
     try {
       const savedChallenges = await AsyncStorage.getItem('completedChallenges');
@@ -20,7 +20,45 @@ export default function ChallengesPage() {
       console.error('Error loading challenges:', error);
     }
   };
-  
+
+  // Function to reset a challenge's progress
+  const resetChallenge = async (challengeId) => {
+    try {
+      const updatedChallenges = challenges.map((challenge) => {
+        if (challenge.id === challengeId) {
+          return { ...challenge, progress: 0, completed: false };  // Reset progress and mark as not completed
+        }
+        return challenge;
+      });
+
+      // Save updated challenges to AsyncStorage
+      await AsyncStorage.setItem('completedChallenges', JSON.stringify(updatedChallenges));
+
+      // Now also update the active challenges if necessary
+      const activeChallenges = await AsyncStorage.getItem('activeChallenges');
+      let parsedActiveChallenges = activeChallenges ? JSON.parse(activeChallenges) : [];
+
+      // Remove any completed challenges from active challenges
+      parsedActiveChallenges = parsedActiveChallenges.filter(
+        (activeChallenge) => activeChallenge.id !== challengeId
+      );
+
+      // Add the restarted challenge back to active challenges
+      const restartedChallenge = updatedChallenges.find(ch => ch.id === challengeId);
+      parsedActiveChallenges.push(restartedChallenge);
+
+      // Save updated active challenges to AsyncStorage
+      await AsyncStorage.setItem('activeChallenges', JSON.stringify(parsedActiveChallenges));
+
+      // Update state
+      setChallenges(updatedChallenges);
+
+      Alert.alert('Success', 'Challenge has been restarted!');
+    } catch (error) {
+      console.error('Error resetting challenge:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Your Challenges</Text>
@@ -33,6 +71,16 @@ export default function ChallengesPage() {
               <Text style={styles.challengeStatusText}>
                 {challenge.completed ? 'Completed 🏆' : `Progress: ${challenge.progress || 0}/${challenge.goal} 🚀`}
               </Text>
+
+              {/* Display the Restart Challenge Button if the challenge is completed */}
+              {challenge.completed && (
+                <TouchableOpacity
+                  style={styles.restartButton}
+                  onPress={() => resetChallenge(challenge.id)}
+                >
+                  <Text style={styles.restartButtonText}>Restart Challenge</Text>
+                </TouchableOpacity>
+              )}
             </View>
           ))
         ) : (
@@ -41,7 +89,6 @@ export default function ChallengesPage() {
       </ScrollView>
     </SafeAreaView>
   );
-  
 }
 
 const styles = StyleSheet.create({
@@ -52,4 +99,16 @@ const styles = StyleSheet.create({
   challengeRewardText: { fontSize: 16, color: 'green' },
   challengeStatusText: { fontSize: 16, color: 'blue' },
   noChallengesText: { fontSize: 18, color: 'gray', textAlign: 'center', marginTop: 50 },
+  restartButton: {
+    backgroundColor: '#FF914D',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  restartButtonText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
+  },
 });

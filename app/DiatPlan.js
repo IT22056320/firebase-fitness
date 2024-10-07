@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { getFirestore, collection, addDoc } from 'firebase/firestore'; // Firebase Firestore
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Firebase Storage
 import * as ImagePicker from 'expo-image-picker'; // Image Picker
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const AddToPlanScreen = () => {
   const router = useRouter();
@@ -147,6 +148,7 @@ const AddToPlanScreen = () => {
   const renderMealItem = ({ item }) => {
     const isSelected = selectedMeals.includes(item.id);
     return (
+      
       <TouchableOpacity
       style={[styles.mealItem, isSelected && styles.mealItemSelected]}
         onPress={() => handleMealSelection(item)}
@@ -157,9 +159,18 @@ const AddToPlanScreen = () => {
       </TouchableOpacity>
     );
   };
+  const handleBack = () => {
+    router.back();
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
+         <View style={styles.header}>
+        <TouchableOpacity onPress={handleBack}>
+          <Icon name="arrow-back-ios" size={24} color="purple" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Customize Plan</Text>
+      </View>
       <View style={styles.container}>
         <TouchableOpacity onPress={handleImagePicker}>
           <Image
@@ -243,6 +254,7 @@ const AddToPlanScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+      
     </ScrollView>
   );
 };
@@ -250,11 +262,24 @@ const AddToPlanScreen = () => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
+    paddingTop:50
   },
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
+    
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'purple',
+    marginLeft: 16,
   },
   image: {
     width: '100%',

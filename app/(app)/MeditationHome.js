@@ -17,7 +17,15 @@ const meditationSessionsData = [
   { id: '6', title: 'Visualize Success', duration: '12', level: 'Intermediate', category: 'Success', image: require('../../assets/images/back.png'), type: 'timer', description: 'Visualization of success to help envision goals and reinforce positive outcomes.', instructions: '1. Visualize achieving your goals...', challenge: { goal: 5, reward: 'Success Badge', completed: false } },
   { id: '7', title: 'Body Scan Meditation', duration: '10', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'guided', description: 'Body scan meditation focused on awareness of physical sensations for relaxation.', instructions: '1. Lay down... 2. Focus on scanning each part of your body for tension...', challenge: { goal: 3, reward: 'Body Awareness Badge', completed: false } },
   { id: '8', title: 'Relax & Recover', duration: '25', level: 'Advanced', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'guided', description: 'Relax and recover with this advanced guided meditation session.', instructions: '1. Relax in a quiet place... 2. Allow yourself to unwind completely...', challenge: { goal: 8, reward: 'Recovery Badge', completed: false } },
+  { id: '9', title: 'Loving Kindness Meditation', duration: '15', level: 'Intermediate', category: 'Positivity', image: require('../../assets/images/back.png'), type: 'guided', description: 'Cultivate love and kindness towards yourself and others.', instructions: '1. Sit comfortably... 2. Focus on feelings of compassion and love...', challenge: { goal: 5, reward: 'Kindness Badge', completed: false } },
+  { id: '10', title: 'Breath Counting Meditation', duration: '5', level: 'Beginner', category: 'Focus', image: require('../../assets/images/back.png'), type: 'timer', description: 'A simple meditation to improve focus by counting your breaths.', instructions: '1. Find a quiet place... 2. Start counting each breath...', challenge: { goal: 6, reward: 'Focus Badge', completed: false } },
+  { id: '11', title: 'Mountain Visualization', duration: '12', level: 'Intermediate', category: 'Success', image: require('../../assets/images/back.png'), type: 'guided', description: 'Visualize a mountain to strengthen your mental resilience.', instructions: '1. Imagine yourself as a strong mountain...', challenge: { goal: 4, reward: 'Resilience Badge', completed: false } },
+  { id: '12', title: 'Sound Meditation', duration: '8', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'timer', description: 'Focus on surrounding sounds to increase awareness and relaxation.', instructions: '1. Find a quiet place... 2. Focus on the sounds around you...', challenge: { goal: 4, reward: 'Sound Awareness Badge', completed: false } },
+  { id: '13', title: 'Progressive Muscle Relaxation', duration: '15', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'guided', description: 'A guided relaxation to release muscle tension step by step.', instructions: '1. Tense and release each muscle group...', challenge: { goal: 6, reward: 'Muscle Relaxation Badge', completed: false } },
+  { id: '14', title: 'Mindful Eating Meditation', duration: '10', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'guided', description: 'Focus on mindful eating to promote a healthy relationship with food.', instructions: '1. Eat slowly and focus on each bite...', challenge: { goal: 3, reward: 'Healthy Eating Badge', completed: false } },
+  { id: '15', title: 'Gratitude Journaling', duration: '5', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/back.png'), type: 'guided', description: 'Practice gratitude journaling to improve mood and well-being.', instructions: '1. Write down things you are grateful for...', challenge: { goal: 4, reward: 'Gratitude Journal Badge', completed: false } },
 ];
+
 
 const filters = ['All', 'Positivity', 'Focus', 'Success', 'Physical Health'];
 
@@ -27,15 +35,15 @@ export default function MeditationHome() {
   const [filteredSessions, setFilteredSessions] = useState(meditationSessionsData);
   const [savedSessions, setSavedSessions] = useState([]);
   const [completedChallenges, setCompletedChallenges] = useState([]);
-  const [activeChallenges, setActiveChallenges] = useState([]); // Track active challenges
+  const [activeChallenges, setActiveChallenges] = useState([]);
   const [rewards, setRewards] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     loadSavedSessions();
     loadSavedChallenges();
-    loadRewards();
     loadActiveChallenges();
+    loadRewards();
   }, []);
 
   const loadSavedSessions = async () => {
@@ -161,15 +169,13 @@ export default function MeditationHome() {
       params: { session: JSON.stringify(session), updateProgress: true },
     });
   };
-  
+
   const navigateToTimerSession = (session) => {
     router.push({
       pathname: '/TimerMeditationSession',
       params: { session: JSON.stringify(session), updateProgress: true },
     });
   };
-  
-  
 
   const navigateToSavedSessions = () => {
     router.push({
@@ -179,7 +185,6 @@ export default function MeditationHome() {
   };
 
   const handleStartChallenge = (session) => {
-    // Check if the challenge is already active
     if (!activeChallenges.find(challenge => challenge.id === session.id)) {
       const updatedChallenges = [...activeChallenges, session];
       setActiveChallenges(updatedChallenges);
@@ -192,35 +197,42 @@ export default function MeditationHome() {
 
   const updateChallengeProgress = async (session) => {
     try {
-      const challenges = await AsyncStorage.getItem('completedChallenges');
-      let parsedChallenges = challenges ? JSON.parse(challenges) : [];
+      const savedChallenges = await AsyncStorage.getItem('completedChallenges');
+      let parsedChallenges = savedChallenges ? JSON.parse(savedChallenges) : [];
   
       const challengeIndex = parsedChallenges.findIndex(challenge => challenge.id === session.id);
   
       if (challengeIndex >= 0) {
-        // Update the progress if challenge exists
+        // Increment progress
         parsedChallenges[challengeIndex].progress += 1;
+  
+        // Check if the challenge is now complete
+        if (parsedChallenges[challengeIndex].progress >= session.challenge.goal) {
+          parsedChallenges[challengeIndex].completed = true;  // Mark as completed
+          giveReward(session.challenge.reward);  // Give the reward if completed
+        }
       } else {
-        // Add the new challenge with progress 1
-        parsedChallenges.push({ 
-          id: session.id, 
-          progress: 1, 
-          goal: session.challenge.goal, 
-          reward: session.challenge.reward 
+        // If this challenge is not tracked yet, add it with initial progress
+        parsedChallenges.push({
+          id: session.id,
+          progress: 1,
+          goal: session.challenge.goal,
+          reward: session.challenge.reward,
+          completed: false,
         });
       }
   
-      // Check if the challenge is complete
-      const updatedChallenges = parsedChallenges.map(challenge => {
-        if (challenge.progress >= challenge.goal) {
-          challenge.completed = true;  // Mark as completed
-          giveReward(challenge.reward); // Give reward
-        }
-        return challenge;
-      });
+      // Save updated challenges back to AsyncStorage
+      await AsyncStorage.setItem('completedChallenges', JSON.stringify(parsedChallenges));
   
-      // Save updated challenges back to storage
-      await AsyncStorage.setItem('completedChallenges', JSON.stringify(updatedChallenges));
+      // Update local state
+      setCompletedChallenges(parsedChallenges);
+  
+      // Update activeChallenges to remove any completed ones
+      const updatedActiveChallenges = activeChallenges.filter(ch => ch.id !== session.id || !parsedChallenges[challengeIndex]?.completed);
+      setActiveChallenges(updatedActiveChallenges);
+      saveActiveChallengesToStorage(updatedActiveChallenges);
+  
     } catch (error) {
       console.error('Error updating challenge progress:', error);
     }
@@ -231,9 +243,9 @@ export default function MeditationHome() {
     try {
       const savedRewards = await AsyncStorage.getItem('rewards');
       let rewardList = savedRewards ? JSON.parse(savedRewards) : [];
-      
+
       if (!rewardList.includes(reward)) {
-        rewardList.push(reward); // Add the reward
+        rewardList.push(reward);
         await AsyncStorage.setItem('rewards', JSON.stringify(rewardList));
         alert(`You earned the ${reward} reward! 🏆`);
       } else {
@@ -243,13 +255,6 @@ export default function MeditationHome() {
       console.error('Error giving reward:', error);
     }
   };
-  
-
-  const handleSessionCompletion = () => {
-    updateChallengeProgress(session);
-    alert(`You've completed the ${session.title} session!`);
-  };
-  
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -308,7 +313,7 @@ export default function MeditationHome() {
                         <View style={styles.sessionInfo}>
                           <Text style={styles.sessionTitle}>{session.title}</Text>
                           <Text style={styles.sessionDetails}>{session.duration} • {session.level}</Text>
-                          
+
                           {/* Display Challenge Info */}
                           <Text style={styles.challengeText}>Goal: Complete {session.challenge.goal} times</Text>
                           <Text style={styles.challengeRewardText}>Reward: {session.challenge.reward}</Text>
@@ -398,6 +403,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     paddingVertical: 10,
+    paddingBottom:80
   },
   headerContainer: {
     flexDirection: 'row',

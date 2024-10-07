@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import BottomNav from '../components/BottomNav';
 
 
 const NutritionScreen = () => {
@@ -42,6 +43,7 @@ const NutritionScreen = () => {
           <Text style={styles.navLink}onPress={() => router.push('DiatPlan')}>Customize Meal Plan</Text>
         </TouchableOpacity>
       </View>
+      <BottomNav />
     </View>
   );
 };

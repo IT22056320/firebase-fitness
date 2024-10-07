@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Alert, Dimen
 import { useRouter } from 'expo-router'; // Use this for navigation
 import { db } from '../firebaseConfig'; // Firebase config import
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import BottomNav from '../components/BottomNav';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const SelectPlanScreen = () => {
   const router = useRouter();
@@ -10,6 +12,9 @@ const SelectPlanScreen = () => {
 
   // Get the screen width inside the component
   const screenWidth = Dimensions.get('window').width;
+  const handleBack = () => {
+    router.back();
+  };
 
   // Fetch diet plans from Firebase
   useEffect(() => {
@@ -62,6 +67,7 @@ const SelectPlanScreen = () => {
 
   const renderMealPlan = ({ item }) => (
     <View style={styles.mealCard}>
+      
       <TouchableOpacity onPress={() => handleViewMeal(item)}>
         <Image source={require('../assets/images/pexels-chanwalrus-958545.jpg')} style={[styles.mealImage, { width: screenWidth / 2 - 30 }]} />
       </TouchableOpacity>
@@ -77,8 +83,10 @@ const SelectPlanScreen = () => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>Select a Plan</Text>
-        <Text style={styles.subHeaderText}>Meal Plans</Text>
+        <TouchableOpacity onPress={handleBack}>
+          <Icon name="arrow-back-ios" size={24} color="purple" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Select a Plan</Text>
       </View>
 
       {/* Meal Plans List */}
@@ -100,20 +108,7 @@ const SelectPlanScreen = () => {
       </TouchableOpacity>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => router.push('Home')}>
-          <Text style={styles.navLink}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.navLink}>Meditation</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('DietPlanHome')}>
-          <Text style={styles.navLink}>Diet</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.navLink}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNav />
     </View>
   );
 };
@@ -122,19 +117,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8', // Light background color for a cleaner look
+    paddingTop:60,
+    paddingBottom:80,
   },
   header: {
-    marginTop: 20,
-    padding: 20,
+    flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-    backgroundColor: '#FFFFFF', // White background for header
+    padding: 16,
   },
-  headerText: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#6A1B9A',
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'purple',
+    marginLeft: 16,
   },
   subHeaderText: {
     fontSize: 18,

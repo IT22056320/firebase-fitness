@@ -65,6 +65,7 @@ export default function _layout() {
 <Stack.Screen
         name="MeditationHome"
         options={{ title: 'Meditation' }}
+       
       />
       <Stack.Screen
         name="MeditationDetails"

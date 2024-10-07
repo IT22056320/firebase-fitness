@@ -32,10 +32,7 @@ export default function Home() {
             <Text style={[styles.headerText, styles.highlightedText]}>WORKOUT</Text>
           </View>
           <View style={styles.avatarContainer}>
-            <Image
-              source={require('../../assets/images/avatar.png')}
-              style={styles.avatar}
-            />
+            
             <View style={styles.notificationIconContainer}>
               <Ionicons name="notifications" size={hp(3)} color="gray" />
             </View>
@@ -44,8 +41,8 @@ export default function Home() {
 
         {/* Sign-out button */}
         <View style={styles.signOutContainer}>
-          <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
-            <Text style={styles.signOutText}>Sign Out</Text>
+          <TouchableOpacity onPress={handleNavigateToFitnessJournal} style={styles.signOutButton}>
+            <Text style={styles.signOutText}>Fitness Journal</Text>
           </TouchableOpacity>
         </View>
 
@@ -76,6 +73,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     paddingVertical: 10,
+    paddingBottom:80
+    
   },
   headerContainer: {
     flexDirection: 'row',
@@ -121,7 +120,7 @@ const styles = StyleSheet.create({
     marginTop: hp(1),
   },
   signOutButton: {
-    backgroundColor: '#E11D48',
+    backgroundColor: '#6E44FF',
     paddingVertical: hp(1),
     paddingHorizontal: wp(4),
     borderRadius: 10,
@@ -139,6 +138,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp(1.5),
     paddingHorizontal: wp(5),
     borderRadius: 10,
+    
   },
   fitnessJournalText: {
     color: 'white',
