@@ -1,110 +1,150 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import YoutubePlayer from 'react-native-youtube-iframe';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';  // Correct hook for accessing params
+import { Audio } from 'expo-av';  // Import Expo's Audio module
 
-export default function TimerMeditationSession() {
-  const router = useRouter();
-  const [duration, setDuration] = useState(0);  // Video duration in seconds
-  const [timer, setTimer] = useState(0);  // Timer state
-  const [isPlaying, setIsPlaying] = useState(false);  // Track play state of the video
+export default function TimerSession() {
+  const params = useLocalSearchParams();  // Access params
+  const session = params.session ? JSON.parse(params.session) : null;  // Safely parse session data
 
-  // Update the timer when video duration is fetched
-  const handleVideoDuration = (durationInSeconds) => {
-    setDuration(durationInSeconds);
-    setTimer(durationInSeconds);  // Set timer to video duration
-  };
+  const initialTimer = parseInt(session.duration) * 60;  // Store initial time in seconds
+  const [timer, setTimer] = useState(initialTimer);  // Initialize timer in seconds
+  const [isRunning, setIsRunning] = useState(false);  // Track whether the timer is running
+  const [sound, setSound] = useState();
 
-  // Convert seconds to MM:SS format
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  // Start or pause the timer based on the play state of the video
   useEffect(() => {
-    let interval = null;
-    if (isPlaying && timer > 0) {
+    let interval;
+    if (isRunning && timer > 0) {
       interval = setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
-    } else if (!isPlaying || timer === 0) {
-      clearInterval(interval);
+      }, 1000);  // Decrease timer every second
+    } else if (timer === 0) {
+      playSound();  // Play sound when timer reaches 0
+      handleSessionCompletion(session);  // Call session completion function when the timer hits 0
+      clearInterval(interval);  // Clear the interval
+      setIsRunning(false);
     }
-    return () => clearInterval(interval);
-  }, [isPlaying, timer]);
+    return () => clearInterval(interval);  // Clean up interval on component unmount
+  }, [isRunning, timer]);
+
+  // Function to play sound when the timer expires
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/sound/timer_end.wav')  // Use your own sound file here
+    );
+    setSound(sound);
+    await sound.playAsync();  // Play the sound
+  }
+
+  // Clean up sound when the component unmounts
+  useEffect(() => {
+    return sound ? () => { sound.unloadAsync(); } : undefined;
+  }, [sound]);
+
+  const startTimer = () => {
+    setIsRunning(true);
+  };
+
+  const skipTimer = () => {
+    setTimer(0);  // Set the timer to 0, triggering the end of the timer
+    handleSessionCompletion(session);  // Ensure challenge progress is updated when skipping
+    setIsRunning(false);  // Stop the timer
+  };
+
+  const resetTimer = () => {
+    setTimer(initialTimer);  // Reset the timer to the initial value
+    setIsRunning(false);  // Stop the timer
+  };
+
+  const handleSessionCompletion = (session) => {
+    updateChallengeProgress(session);
+    alert(`You've completed the ${session.title} session!`);
+  };
+  
+
+  if (!session) {
+    return (
+      <View style={styles.container}>
+        <Text>Session not found.</Text>
+      </View>
+    );
+  }
+
+  // Convert the timer value from seconds to minutes and seconds
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.timerContainer}>
-        {/* Display the timer */}
-        <Text style={styles.timer}>{formatTime(timer)}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>{session.title}</Text>
+      <Text style={styles.description}>{session.description}</Text>
+      <Text style={styles.timer}>{formatTime(timer)}</Text>
+      
+      <TouchableOpacity style={styles.startButton} onPress={startTimer} disabled={isRunning}>
+        <Text style={styles.buttonText}>{isRunning ? 'Running' : 'Start'}</Text>
+      </TouchableOpacity>
 
-        {/* YouTube video player */}
-        <YoutubePlayer
-          height={hp(30)}
-          play={isPlaying}
-          videoId={'inpok4MKVLM'}  // Replace with your meditation video ID
-          onReady={() => console.log('Video is ready')}
-          onChangeState={(state) => {
-            if (state === 'playing') {
-              setIsPlaying(true);
-            } else {
-              setIsPlaying(false);
-            }
-          }}
-          onDuration={handleVideoDuration}  // Set the video duration in seconds
-        />
+      {/* Skip Button */}
+      <TouchableOpacity style={styles.skipButton} onPress={skipTimer}>
+        <Text style={styles.buttonText}>Skip</Text>
+      </TouchableOpacity>
 
-        {/* Button to start the meditation */}
-        <TouchableOpacity style={styles.startButton} onPress={() => setIsPlaying(!isPlaying)}>
-          <Text style={styles.buttonText}>{isPlaying ? 'Pause' : 'Start'}</Text>
-        </TouchableOpacity>
-
-        {/* Adjust Duration Button */}
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Adjust Duration')}>
-          <Text style={styles.buttonText}>Adjust Duration</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      {/* Reset Button */}
+      <TouchableOpacity style={styles.resetButton} onPress={resetTimer}>
+        <Text style={styles.buttonText}>Reset</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F0E6FE',
+    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'white',
   },
-  timerContainer: {
-    alignItems: 'center',
-  },
-  timer: {
-    fontSize: hp(8),
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  button: {
-    backgroundColor: '#E5E7EB',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginBottom: 20,
+  description: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  timer: {
+    fontSize: 48,
+    marginBottom: 40,
   },
   startButton: {
     backgroundColor: '#6E44FF',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 10,  // Add margin to separate the buttons
+  },
+  skipButton: {
+    backgroundColor: '#FF4444',  // Red color for skip button
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginBottom: 10,  // Add margin to separate the buttons
+  },
+  resetButton: {
+    backgroundColor: '#FFD700',  // Yellow color for reset button
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
   },
   buttonText: {
-    fontSize: hp(2.5),
+    fontSize: 18,
     color: '#fff',
   },
 });

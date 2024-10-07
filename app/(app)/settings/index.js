@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'expo-router';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomNav from '../../../components/BottomNav';
 
-const Settings = ({ navigation }) => {
+const Settings = () => {
   const { user } = useAuth();
   const router = useRouter();
 
@@ -14,15 +14,20 @@ const Settings = ({ navigation }) => {
     router.back();
   };
 
-  const handleAvatar = () =>{
+  const handleAvatar = () => {
     router.push('settavatarCreator');
-  }
+  };
+
   const handleProfile = () => {
     router.push('profile');
   };
 
   const handleCalculator = () => {
     router.push('bmiCalculator');
+  };
+
+  const handleAchievements = () => {
+    router.push('AchievementsPage');
   };
 
   return (
@@ -70,21 +75,10 @@ const Settings = ({ navigation }) => {
           <Icon name="chevron-right" size={24} color="#6E44FF" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.settingsOption} onPress={() => navigation.navigate('PrivacyPolicy')}>
-          <Icon name="lock" size={24} color="#6E44FF" />
-          <Text style={styles.optionText}>Privacy Policy</Text>
-          <Icon name="chevron-right" size={24} color="#6E44FF" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.settingsOption} onPress={() => navigation.navigate('Settings')}>
-          <Icon name="settings" size={24} color="#6E44FF" />
-          <Text style={styles.optionText}>Settings</Text>
-          <Icon name="chevron-right" size={24} color="#6E44FF" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.settingsOption} onPress={() => navigation.navigate('Help')}>
-          <Icon name="help" size={24} color="#6E44FF" />
-          <Text style={styles.optionText}>Help</Text>
+        {/* Achievements Button */}
+        <TouchableOpacity style={styles.settingsOption} onPress={handleAchievements}>
+          <Icon name="emoji-events" size={24} color="#6E44FF" />
+          <Text style={styles.optionText}>Achievements</Text>
           <Icon name="chevron-right" size={24} color="#6E44FF" />
         </TouchableOpacity>
 

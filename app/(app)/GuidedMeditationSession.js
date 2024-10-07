@@ -1,72 +1,69 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLocalSearchParams } from 'expo-router';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import * as Print from 'expo-print';
-import * as Sharing from 'expo-sharing';
-import * as MediaLibrary from 'expo-media-library';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
-import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function GuidedMeditationSession() {
-  const router = useRouter();
-  const description = `Guided visualization is a powerful tool to reduce stress and bring about a sense of calm by using the mind's eye to create relaxing mental images...`;
+  const params = useLocalSearchParams();
+  const session = params.session ? JSON.parse(params.session) : null;
 
-  const handleDownloadPDF = async () => {
+  const updateChallengeProgress = async (session) => {
     try {
-      // Load the image asset
-      const asset = Asset.fromModule(require('../../assets/images/back.png'));
-      await asset.downloadAsync();
+      const challenges = await AsyncStorage.getItem('completedChallenges');
+      let parsedChallenges = challenges ? JSON.parse(challenges) : [];
+      
+      const challengeIndex = parsedChallenges.findIndex(challenge => challenge.id === session.id);
 
-      // Convert the local image to base64 if required for iOS
-      const base64Image = await FileSystem.readAsStringAsync(asset.localUri, {
-        encoding: FileSystem.EncodingType.Base64,
+      if (challengeIndex >= 0) {
+        parsedChallenges[challengeIndex].progress += 1;
+      } else {
+        parsedChallenges.push({ id: session.id, progress: 1, goal: session.challenge.goal, reward: session.challenge.reward });
+      }
+
+      const updatedChallenges = parsedChallenges.map(challenge => {
+        if (challenge.progress >= challenge.goal) {
+          challenge.completed = true;
+        }
+        return challenge;
       });
-      const imgSrc = `data:image/png;base64,${base64Image}`;
 
-      // Define HTML content with the image and description
-      const htmlContent = `
-        <html>
-          <body>
-            <h1 style="text-align: center;">Guided Visualization for Stress Relief</h1>
-            <img src="${imgSrc}" style="width: 100%; height: auto;" />
-            <p style="font-size: 16px; text-align: justify;">${description}</p>
-          </body>
-        </html>
-      `;
+      await AsyncStorage.setItem('completedChallenges', JSON.stringify(updatedChallenges));
 
-      // Generate PDF
-      const { uri } = await Print.printToFileAsync({ html: htmlContent });
-
-      // Save the PDF to media library (for Android)
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status === 'granted') {
-        const asset = await MediaLibrary.createAssetAsync(uri);
-        await MediaLibrary.createAlbumAsync('Downloads', asset, false);
-      }
-
-      // Optionally share the PDF
-      if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri);
-      }
+      alert(`You've completed the ${session.title} session!`);
     } catch (error) {
-      console.log('Error creating PDF:', error);
+      console.error('Error updating challenge progress:', error);
     }
   };
+
+  const handleSessionCompletion = () => {
+    updateChallengeProgress(session);
+    alert(`You've completed the ${session.title} session!`);
+  };
+  
+
+  if (!session) {
+    return (
+      <View style={styles.container}>
+        <Text>Session not found.</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <Text style={styles.title}>Guided Visualization for Stress Relief</Text>
-        <Image source={require('../../assets/images/back.png')} style={styles.image} />
-        <Text style={styles.description}>{description}</Text>
-
-        {/* Button to download the content as PDF */}
-        <TouchableOpacity style={styles.downloadButton} onPress={handleDownloadPDF}>
-          <Text style={styles.downloadButtonText}>Download as PDF</Text>
-        </TouchableOpacity>
+        <Text style={styles.title}>{session.title}</Text>
+        <Image source={session.image} style={styles.image} />
+        <Text style={styles.description}>{session.description}</Text>
+        <Text style={styles.instructionsTitle}>Instructions</Text>
+        <Text style={styles.instructions}>{session.instructions}</Text>
       </ScrollView>
+
+      <TouchableOpacity onPress={handleSessionCompletion} style={styles.completeButton}>
+        <Text style={styles.completeButtonText}>Complete Session</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -75,7 +72,20 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: 'white' },
   title: { fontSize: hp(4), fontWeight: 'bold', marginBottom: 10 },
   image: { width: '100%', height: hp(25), marginBottom: 20 },
-  description: { fontSize: hp(2.2), color: '#333', textAlign: 'justify' },
-  downloadButton: { backgroundColor: '#6E44FF', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10, alignItems: 'center', marginTop: 20 },
-  downloadButtonText: { color: '#fff', fontSize: hp(2.5), fontWeight: 'bold' },
+  description: { fontSize: hp(2.2), color: '#333', textAlign: 'justify', marginBottom: 20 },
+  instructionsTitle: { fontSize: hp(3), fontWeight: 'bold', marginBottom: 10 },
+  instructions: { fontSize: hp(2.2), color: '#555', textAlign: 'justify' },
+  completeButton: {
+    backgroundColor: '#6E44FF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  completeButtonText: {
+    fontSize: 18,
+    color: '#FFF',
+    textAlign: 'center',
+  },
 });
