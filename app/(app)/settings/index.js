@@ -15,8 +15,9 @@ const Settings = () => {
   };
 
   const handleAvatar = () => {
-    router.push('settavatarCreator');
-  };
+    router.push('AvatarCreator'); // Ensure 'AvatarCreator' is registered in your routing configuration
+};
+
 
   const handleProfile = () => {
     router.push('profile');
