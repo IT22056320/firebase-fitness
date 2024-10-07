@@ -15,12 +15,10 @@ export default function FitnessJournal() {
   const [image, setImage] = useState(null); // Image URI
   const [editingId, setEditingId] = useState(null); // Track the ID of the entry being edited
 
-  // Load journal entries on component mount
   useEffect(() => {
     loadJournalEntries();
   }, []);
 
-  // Save journal entries to AsyncStorage
   const saveJournalEntries = async (entries) => {
     try {
       await AsyncStorage.setItem('journalEntries', JSON.stringify(entries));
@@ -29,7 +27,6 @@ export default function FitnessJournal() {
     }
   };
 
-  // Load journal entries from AsyncStorage
   const loadJournalEntries = async () => {
     try {
       const storedEntries = await AsyncStorage.getItem('journalEntries');
@@ -41,7 +38,6 @@ export default function FitnessJournal() {
     }
   };
 
-  // Add or update a journal entry
   const handleAddEntry = () => {
     const newEntry = {
       id: editingId || moment().valueOf().toString(), // Unique ID or use the existing one for editing
@@ -54,26 +50,22 @@ export default function FitnessJournal() {
 
     let updatedJournal;
     if (editingId) {
-      // Update the existing entry
       updatedJournal = journal.map((item) =>
         item.id === editingId ? newEntry : item
       );
     } else {
-      // Add a new entry
       updatedJournal = [...journal, newEntry];
     }
 
     setJournal(updatedJournal);
-    saveJournalEntries(updatedJournal); // Save to AsyncStorage
+    saveJournalEntries(updatedJournal);
 
-    // Reset form after adding/updating
     setEntry('');
     setEmojiRating('');
     setImage(null);
     setEditingId(null); // Reset editing mode
   };
 
-  // Pick an image from gallery
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -83,8 +75,8 @@ export default function FitnessJournal() {
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,  // Enables cropping
-      aspect: [1, 1], // Enforces square aspect ratio (for journal image)
+      allowsEditing: true,
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -98,7 +90,6 @@ export default function FitnessJournal() {
     }
   };
 
-  // Request camera permission and take a photo
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (permission.status !== 'granted') {
@@ -118,24 +109,22 @@ export default function FitnessJournal() {
         [{ resize: { width: 300, height: 300 } }],
         { compress: 0.7, format: ImageManipulator.SaveFormat.PNG }
       );
-      setImage(manipResult.uri); // Update image state with resized image
+      setImage(manipResult.uri);
     }
   };
 
-  // Delete a journal entry
   const handleDeleteEntry = (id) => {
     const updatedJournal = journal.filter((item) => item.id !== id);
     setJournal(updatedJournal);
-    saveJournalEntries(updatedJournal); // Update AsyncStorage
+    saveJournalEntries(updatedJournal);
   };
 
-  // Edit a journal entry (load it into the form)
   const handleEditEntry = (item) => {
     setEntry(item.text);
     setCategory(item.category);
     setEmojiRating(item.emoji);
     setImage(item.image);
-    setEditingId(item.id); // Set the ID of the entry being edited
+    setEditingId(item.id);
   };
 
   return (
@@ -150,11 +139,15 @@ export default function FitnessJournal() {
           onChangeText={setEntry}
         />
 
-        {/* Button for Uploading an Image from Gallery */}
-        <Button title="Upload Image from Gallery" onPress={pickImage} />
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity style={styles.button} onPress={pickImage}>
+            <Text style={styles.buttonText}>Upload from Gallery</Text>
+          </TouchableOpacity>
 
-        {/* Button for Taking a Photo */}
-        <Button title="Take a Photo" onPress={takePhoto} />
+          <TouchableOpacity style={styles.button} onPress={takePhoto}>
+            <Text style={styles.buttonText}>Take a Photo</Text>
+          </TouchableOpacity>
+        </View>
 
         {image && <Image source={{ uri: image }} style={styles.image} />}
 
@@ -185,10 +178,9 @@ export default function FitnessJournal() {
           </TouchableOpacity>
         </View>
 
-        <Button
-          title={editingId ? "Update Entry" : "Add Entry"} // Change button text based on mode
-          onPress={handleAddEntry}
-        />
+        <TouchableOpacity style={styles.submitButton} onPress={handleAddEntry}>
+          <Text style={styles.submitButtonText}>{editingId ? "Update Entry" : "Add Entry"}</Text>
+        </TouchableOpacity>
 
         <View style={styles.journalContainer}>
           {journal.map((item) => (
@@ -199,8 +191,12 @@ export default function FitnessJournal() {
               <Text style={styles.entryDate}>{item.date}</Text>
               {item.image && <Image source={{ uri: item.image }} style={styles.entryImage} />}
               <View style={styles.entryActions}>
-                <Button title="Edit" onPress={() => handleEditEntry(item)} />
-                <Button title="Delete" onPress={() => handleDeleteEntry(item.id)} />
+                <TouchableOpacity style={styles.actionButton} onPress={() => handleEditEntry(item)}>
+                  <Text style={styles.actionButtonText}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionButton} onPress={() => handleDeleteEntry(item.id)}>
+                  <Text style={styles.actionButtonText}>Delete</Text>
+                </TouchableOpacity>
               </View>
             </View>
           ))}
@@ -214,32 +210,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#F0E6FE', // Updated background color
   },
   header: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 'bold',
+    color: '#6E44FF', // Matches button color
     marginBottom: 20,
-    color: '#2c3e50',
   },
   input: {
-    borderColor: '#bdc3c7',
+    borderColor: '#b0c4de',
     borderWidth: 1,
-    padding: 10,
+    padding: 12,
     marginBottom: 10,
-    borderRadius: 5,
-    backgroundColor: 'white',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    fontSize: 16,
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  button: {
+    backgroundColor: '#6E44FF', // Updated button color
+    padding: 12,
+    borderRadius: 10,
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   picker: {
     height: 50,
     marginVertical: 10,
-    color: '#2c3e50',
+    color: '#6E44FF', // Updated color
   },
   subHeader: {
     fontSize: 18,
     fontWeight: '600',
     marginTop: 10,
     marginBottom: 5,
+    color: '#2f4f4f',
   },
   emojiContainer: {
     flexDirection: 'row',
@@ -247,14 +262,32 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   emoji: {
-    fontSize: 32,
+    fontSize: 36,
   },
   selectedEmoji: {
-    fontSize: 32,
-    borderColor: '#10B981',
+    fontSize: 36,
+    borderColor: '#6E44FF', // Updated color
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
+  },
+  image: {
+    width: 250,
+    height: 250,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  submitButton: {
+    backgroundColor: '#6E44FF', // Updated button color
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 20,
+  },
+  submitButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   journalContainer: {
     marginTop: 20,
@@ -262,22 +295,22 @@ const styles = StyleSheet.create({
   journalEntry: {
     padding: 15,
     marginVertical: 5,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#e6f0fa',
     borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
   },
-  entryText: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#34495e',
-  },
   entryCategory: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#e74c3c',
+    color: '#6E44FF', // Updated color
+  },
+  entryText: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: '#2f4f4f',
   },
   entryEmoji: {
     fontSize: 24,
@@ -287,11 +320,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: 'italic',
     color: '#7f8c8d',
-  },
-  image: {
-    width: 200,
-    height: 200,
-    marginVertical: 10,
   },
   entryImage: {
     width: 100,
@@ -303,5 +331,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 10,
+  },
+  actionButton: {
+    backgroundColor: '#6E44FF', // Updated action button color
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  actionButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

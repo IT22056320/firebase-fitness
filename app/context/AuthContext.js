@@ -69,8 +69,8 @@ export const AuthContextProvider = ({children}) => {
                 username,
                 email,
                 profileUrl,
-                phoneNumber,
-                dateOfBirth,
+                phoneNumber,   // Ensure phoneNumber is passed
+                dateOfBirth,   // Ensure dateOfBirth is passed
                 userId: response.user.uid,
             });
             return { success: true, data: response.user };
@@ -81,6 +81,7 @@ export const AuthContextProvider = ({children}) => {
             return { success: false, msg };
         }
     };
+    
 
     const updateProfile = async (userId, updates) => {
         const docRef = doc(db, 'users', userId);
