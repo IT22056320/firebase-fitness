@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Alert, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router'; // Use this for navigation
 import { db } from '../firebaseConfig'; // Firebase config import
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
@@ -8,12 +8,19 @@ const SelectPlanScreen = () => {
   const router = useRouter();
   const [mealPlans, setMealPlans] = useState([]);
 
+  // Get the screen width inside the component
+  const screenWidth = Dimensions.get('window').width;
+
   // Fetch diet plans from Firebase
   useEffect(() => {
     const fetchMealPlans = async () => {
-      const querySnapshot = await getDocs(collection(db, 'dietPlans'));
-      const plans = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setMealPlans(plans);
+      try {
+        const querySnapshot = await getDocs(collection(db, 'dietPlans'));
+        const plans = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setMealPlans(plans);
+      } catch (error) {
+        console.error('Error fetching meal plans:', error);
+      }
     };
 
     fetchMealPlans();
@@ -23,25 +30,25 @@ const SelectPlanScreen = () => {
   const handleRemovePlan = async (id) => {
     try {
       Alert.alert(
-        "Delete Plan",
-        "Are you sure you want to delete this plan?",
+        'Delete Plan',
+        'Are you sure you want to delete this plan?',
         [
           {
-            text: "Cancel",
-            style: "cancel",
+            text: 'Cancel',
+            style: 'cancel',
           },
           {
-            text: "OK",
+            text: 'OK',
             onPress: async () => {
               await deleteDoc(doc(db, 'dietPlans', id));
-              setMealPlans(prevPlans => prevPlans.filter(plan => plan.id !== id));
-            }
-          }
+              setMealPlans((prevPlans) => prevPlans.filter((plan) => plan.id !== id));
+            },
+          },
         ],
         { cancelable: true }
       );
     } catch (error) {
-      console.error("Error removing plan: ", error);
+      console.error('Error removing plan: ', error);
     }
   };
 
@@ -56,7 +63,7 @@ const SelectPlanScreen = () => {
   const renderMealPlan = ({ item }) => (
     <View style={styles.mealCard}>
       <TouchableOpacity onPress={() => handleViewMeal(item)}>
-        <Image source={require('../assets/images/pexels-chanwalrus-958545.jpg')} style={styles.mealImage} />
+        <Image source={require('../assets/images/pexels-chanwalrus-958545.jpg')} style={[styles.mealImage, { width: screenWidth / 2 - 30 }]} />
       </TouchableOpacity>
       <Text style={styles.mealTitle}>{item.planName}</Text>
       <Text style={styles.mealDuration}>{item.totalCalories} calories</Text>
@@ -75,13 +82,17 @@ const SelectPlanScreen = () => {
       </View>
 
       {/* Meal Plans List */}
-      <FlatList
-        data={mealPlans}
-        renderItem={renderMealPlan}
-        keyExtractor={(item) => item.id}
-        // Two-column layout for meal cards
-        contentContainerStyle={styles.mealList}
-      />
+      {mealPlans.length === 0 ? (
+        <Text style={{ textAlign: 'center', marginTop: 20 }}>No meal plans available.</Text>
+      ) : (
+        <FlatList
+          data={mealPlans}
+          renderItem={renderMealPlan}
+          keyExtractor={(item) => item.id}
+          numColumns={2} // Two-column layout for meal cards
+          contentContainerStyle={styles.mealList}
+        />
+      )}
 
       {/* Customize Plan Button */}
       <TouchableOpacity style={styles.customizeButton} onPress={() => router.push('DiatPlan')}>
@@ -113,6 +124,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8', // Light background color for a cleaner look
   },
   header: {
+    marginTop: 20,
     padding: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
@@ -132,6 +144,7 @@ const styles = StyleSheet.create({
   mealList: {
     paddingHorizontal: 10,
     paddingBottom: 80, // Space for the customize button
+    marginTop: 40,
   },
   mealCard: {
     flex: 1,
@@ -150,8 +163,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   mealImage: {
-    width: 350,
-    height: 200,
+    height: 200, // Keep the height fixed
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E0E0E0', // Light border for image

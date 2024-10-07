@@ -158,16 +158,17 @@ export default function MeditationHome() {
   const navigateToGuidedSession = (session) => {
     router.push({
       pathname: '/GuidedMeditationSession',
-      params: { session: JSON.stringify(session), updateProgress: true }, // Add this flag
+      params: { session: JSON.stringify(session), updateProgress: true },
     });
   };
   
   const navigateToTimerSession = (session) => {
     router.push({
       pathname: '/TimerMeditationSession',
-      params: { session: JSON.stringify(session), updateProgress: true }, // Add this flag
+      params: { session: JSON.stringify(session), updateProgress: true },
     });
   };
+  
   
 
   const navigateToSavedSessions = () => {

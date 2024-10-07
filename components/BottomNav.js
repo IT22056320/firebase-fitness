@@ -20,6 +20,10 @@ export default function BottomNav() {
     router.push('MeditationHome'); 
   };
 
+  const handleDiet = () => {
+    router.push('DiatPlanHome'); 
+  };
+
   return (
     <View style={styles.bottomNav}>
       <TouchableOpacity onPress={handleHome}>
@@ -28,7 +32,7 @@ export default function BottomNav() {
       <TouchableOpacity onPress={handleMeditation}>
         <Icon name="self-improvement" size={24} color="#6E44FF" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Diet')}>
+      <TouchableOpacity onPress={handleDiet}>
         <Icon name="restaurant" size={24} color="#6E44FF" />
       </TouchableOpacity>
       <TouchableOpacity onPress={handleProfile}>

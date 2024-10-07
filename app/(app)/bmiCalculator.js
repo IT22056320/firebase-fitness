@@ -73,8 +73,27 @@ const BMICalculator = () => {
       setBmi(calculatedBmi.toFixed(1));
       categorizeBMI(calculatedBmi);
       saveBmiValue(calculatedBmi.toFixed(1));
+
+      
     }
   };
+
+  const customizeMeal = () => {
+    if (weight && height) {
+      const heightInMeters = height / 100;
+      const calculatedBmi = weight / (heightInMeters * heightInMeters);
+      setBmi(calculatedBmi.toFixed(1));
+      categorizeBMI(calculatedBmi);
+      saveBmiValue(calculatedBmi.toFixed(1));
+
+      router.push({
+        pathname: '/CustomizedMealPlan',
+        params: { bmiCategory: category },
+      });
+    }
+  };
+
+ 
 
   const categorizeBMI = (bmiValue) => {
     if (bmiValue < 18.5) {
@@ -179,6 +198,10 @@ const BMICalculator = () => {
         <TouchableOpacity style={styles.calculateButton} onPress={calculateBMI}>
           <Text style={styles.buttonText}>Calculate BMI</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.calculateButton} onPress={customizeMeal}>
+          <Text style={styles.buttonText}>Reccommend Meal Plan</Text>
+        </TouchableOpacity>
       </View>
       <BottomNav />
     </View>
@@ -188,7 +211,8 @@ const BMICalculator = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 20 ,
+    paddingTop:70,
     justifyContent: 'center',
     backgroundColor: '#F0E6FE',
   },

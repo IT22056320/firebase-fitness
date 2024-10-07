@@ -6,7 +6,7 @@ import { Audio } from 'expo-av';  // Import Expo's Audio module
 export default function TimerSession() {
   const params = useLocalSearchParams();  // Access params
   const session = params.session ? JSON.parse(params.session) : null;  // Safely parse session data
-
+  const updateChallengeProgress = params.updateChallengeProgress;
   const initialTimer = parseInt(session.duration) * 60;  // Store initial time in seconds
   const [timer, setTimer] = useState(initialTimer);  // Initialize timer in seconds
   const [isRunning, setIsRunning] = useState(false);  // Track whether the timer is running
@@ -56,8 +56,10 @@ export default function TimerSession() {
     setIsRunning(false);  // Stop the timer
   };
 
-  const handleSessionCompletion = (session) => {
-    updateChallengeProgress(session);
+  const handleSessionCompletion = () => {
+    if (updateChallengeProgress) {
+      updateChallengeProgress(session); // Ensure this function is properly passed or available
+    }
     alert(`You've completed the ${session.title} session!`);
   };
   

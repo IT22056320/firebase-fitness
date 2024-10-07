@@ -36,10 +36,10 @@ const NutritionScreen = () => {
           <Text style={styles.navLink}onPress={() => router.push('SelectAPlan')}>My Diet Plan</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={styles.navLink}onPress={() => router.push('BMIcal')}>Calculate BMI</Text>
+          <Text style={styles.navLink}onPress={() => router.push('bmiCalculator')}>Calculate BMI</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={styles.navLink}onPress={() => router.push('DiatPlan')}>Settings</Text>
+          <Text style={styles.navLink}onPress={() => router.push('DiatPlan')}>Customize Meal Plan</Text>
         </TouchableOpacity>
       </View>
     </View>
