@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import moment from 'moment';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function FitnessJournal() {
@@ -11,7 +12,7 @@ export default function FitnessJournal() {
   const [category, setCategory] = useState('Strength');
   const [emojiRating, setEmojiRating] = useState('');
   const [journal, setJournal] = useState([]);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(null); // Image URI
   const [editingId, setEditingId] = useState(null); // Track the ID of the entry being edited
 
   // Load journal entries on component mount
@@ -48,7 +49,7 @@ export default function FitnessJournal() {
       date: moment().format('MMMM Do YYYY, h:mm a'),
       category: category,
       emoji: emojiRating,
-      image: image,
+      image: image, // Store the uploaded image URI
     };
 
     let updatedJournal;
@@ -72,17 +73,52 @@ export default function FitnessJournal() {
     setEditingId(null); // Reset editing mode
   };
 
-  // Pick an image
+  // Pick an image from gallery
   const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Permission to access gallery is required!");
+      return;
+    }
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: true,  // Enables cropping
+      aspect: [1, 1], // Enforces square aspect ratio (for journal image)
       quality: 1,
     });
 
     if (!result.canceled) {
-      setImage(result.uri);
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: 300, height: 300 } }],
+        { compress: 0.7, format: ImageManipulator.SaveFormat.PNG }
+      );
+      setImage(manipResult.uri); // Update image state with resized image
+    }
+  };
+
+  // Request camera permission and take a photo
+  const takePhoto = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (permission.status !== 'granted') {
+      Alert.alert('Permission Required', 'You need to grant camera permission to take a photo');
+      return;
+    }
+
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: 300, height: 300 } }],
+        { compress: 0.7, format: ImageManipulator.SaveFormat.PNG }
+      );
+      setImage(manipResult.uri); // Update image state with resized image
     }
   };
 
@@ -114,7 +150,12 @@ export default function FitnessJournal() {
           onChangeText={setEntry}
         />
 
-        <Button title="Upload Image" onPress={pickImage} />
+        {/* Button for Uploading an Image from Gallery */}
+        <Button title="Upload Image from Gallery" onPress={pickImage} />
+
+        {/* Button for Taking a Photo */}
+        <Button title="Take a Photo" onPress={takePhoto} />
+
         {image && <Image source={{ uri: image }} style={styles.image} />}
 
         <Picker
