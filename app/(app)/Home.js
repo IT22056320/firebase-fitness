@@ -43,21 +43,20 @@ export default function Home() {
           <View style={styles.textContainer}>
             <Text style={[styles.headerText, styles.neutralText]}>READY TO</Text>
             <Text style={[styles.headerText, styles.highlightedText]}>WORKOUT</Text>
-          </View>
-          <View style={styles.avatarContainer}>
             
-            <View style={styles.notificationIconContainer}>
-              <Ionicons name="notifications" size={hp(3)} color="gray" />
-            </View>
           </View>
-        </View>
-
-        {/* Sign-out button */}
-        <View style={styles.signOutContainer}>
+          <View style={styles.signOutContainer}>
           <TouchableOpacity onPress={handleNavigateToFitnessJournal} style={styles.signOutButton}>
             <Text style={styles.signOutText}>Fitness Journal</Text>
           </TouchableOpacity>
         </View>
+          <View style={styles.avatarContainer}>
+            
+          </View>
+        </View>
+
+        {/* Sign-out button */}
+      
 
         {/* Image slider component */}
         <View>
@@ -104,6 +103,7 @@ const styles = StyleSheet.create({
   },
   highlightedText: {
     color: '#E11D48',
+    paddingBottom:10
   },
   avatarContainer: {
     justifyContent: 'center',
@@ -127,12 +127,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginRight: wp(5),
     marginTop: hp(1),
+    paddingLeft:30
+    
   },
   signOutButton: {
     backgroundColor: '#6E44FF',
     paddingVertical: hp(1),
     paddingHorizontal: wp(4),
     borderRadius: 10,
+    
   },
   signOutText: {
     color: 'white',

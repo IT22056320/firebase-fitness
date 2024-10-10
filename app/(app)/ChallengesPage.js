@@ -1,114 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ChallengesPage() {
-  const [challenges, setChallenges] = useState([]);
+  const [activeChallenges, setActiveChallenges] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
-    loadChallenges();
+    loadActiveChallenges();
   }, []);
 
-  const loadChallenges = async () => {
+  const loadActiveChallenges = async () => {
     try {
-      const savedChallenges = await AsyncStorage.getItem('completedChallenges');
+      const savedChallenges = await AsyncStorage.getItem('activeChallenges');
       if (savedChallenges) {
-        setChallenges(JSON.parse(savedChallenges));
+        setActiveChallenges(JSON.parse(savedChallenges));
       }
     } catch (error) {
-      console.error('Error loading challenges:', error);
+      console.error('Error loading active challenges:', error);
     }
   };
 
-  // Function to reset a challenge's progress
-  const resetChallenge = async (challengeId) => {
-    try {
-      const updatedChallenges = challenges.map((challenge) => {
-        if (challenge.id === challengeId) {
-          return { ...challenge, progress: 0, completed: false };  // Reset progress and mark as not completed
-        }
-        return challenge;
+  const navigateToSession = (session) => {
+    if (session.type === 'timer') {
+      router.push({
+        pathname: '/TimerMeditationSession',
+        params: { session: JSON.stringify(session) },
       });
-
-      // Save updated challenges to AsyncStorage
-      await AsyncStorage.setItem('completedChallenges', JSON.stringify(updatedChallenges));
-
-      // Now also update the active challenges if necessary
-      const activeChallenges = await AsyncStorage.getItem('activeChallenges');
-      let parsedActiveChallenges = activeChallenges ? JSON.parse(activeChallenges) : [];
-
-      // Remove any completed challenges from active challenges
-      parsedActiveChallenges = parsedActiveChallenges.filter(
-        (activeChallenge) => activeChallenge.id !== challengeId
-      );
-
-      // Add the restarted challenge back to active challenges
-      const restartedChallenge = updatedChallenges.find(ch => ch.id === challengeId);
-      parsedActiveChallenges.push(restartedChallenge);
-
-      // Save updated active challenges to AsyncStorage
-      await AsyncStorage.setItem('activeChallenges', JSON.stringify(parsedActiveChallenges));
-
-      // Update state
-      setChallenges(updatedChallenges);
-
-      Alert.alert('Success', 'Challenge has been restarted!');
-    } catch (error) {
-      console.error('Error resetting challenge:', error);
+    } else {
+      router.push({
+        pathname: '/GuidedMeditationSession',
+        params: { session: JSON.stringify(session) },
+      });
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Your Challenges</Text>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}>
-        {challenges.length > 0 ? (
-          challenges.map((challenge, index) => (
-            <View key={index} style={styles.challengeContainer}>
-              <Text style={styles.challengeText}>Goal: Complete {challenge.goal} times</Text>
-              <Text style={styles.challengeRewardText}>Reward: {challenge.reward}</Text>
-              <Text style={styles.challengeStatusText}>
-                {challenge.completed ? 'Completed 🏆' : `Progress: ${challenge.progress || 0}/${challenge.goal} 🚀`}
-              </Text>
-
-              {/* Display the Restart Challenge Button if the challenge is completed */}
-              {challenge.completed && (
-                <TouchableOpacity
-                  style={styles.restartButton}
-                  onPress={() => resetChallenge(challenge.id)}
-                >
-                  <Text style={styles.restartButtonText}>Restart Challenge</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noChallengesText}>No active challenges. Start one from the home page!</Text>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView style={styles.container}>
+      <Text style={styles.headerText}>Active Challenges</Text>
+      {activeChallenges.length > 0 ? (
+        activeChallenges.map((challenge) => (
+          <View key={challenge.id} style={styles.challengeContainer}>
+            <TouchableOpacity onPress={() => navigateToSession(challenge)}>
+              <Image source={challenge.image} style={styles.challengeImage} />
+              <View style={styles.challengeInfo}>
+                <Text style={styles.challengeTitle}>{challenge.title}</Text>
+                <Text style={styles.challengeGoal}>Goal: Complete {challenge.challenge.goal} times</Text>
+                <Text style={styles.challengeReward}>Reward: {challenge.challenge.reward}</Text>
+                <Text style={styles.challengeStatus}>
+                  {challenge.challenge.completed ? 'Completed 🏆' : 'In Progress 🚀'}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ))
+      ) : (
+        <Text style={styles.noChallengesText}>No active challenges available.</Text>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#FFF' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  challengeContainer: { backgroundColor: '#F0F0F0', borderRadius: 10, padding: 20, marginBottom: 10 },
-  challengeText: { fontSize: 18 },
-  challengeRewardText: { fontSize: 16, color: 'green' },
-  challengeStatusText: { fontSize: 16, color: 'blue' },
-  noChallengesText: { fontSize: 18, color: 'gray', textAlign: 'center', marginTop: 50 },
-  restartButton: {
-    backgroundColor: '#FF914D',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginTop: 10,
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#F0E6FE',
   },
-  restartButtonText: {
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#4B4B4B',
+  },
+  challengeContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  challengeImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    marginRight: 15,
+  },
+  challengeInfo: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  challengeTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  challengeGoal: {
+    fontSize: 14,
+    color: 'blue',
+  },
+  challengeReward: {
+    fontSize: 14,
+    color: 'green',
+  },
+  challengeStatus: {
+    fontSize: 14,
+    color: '#555',
+  },
+  noChallengesText: {
     fontSize: 16,
-    color: '#FFF',
+    color: '#888',
     textAlign: 'center',
+    marginTop: 20,
   },
 });

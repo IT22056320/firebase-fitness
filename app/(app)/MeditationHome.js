@@ -194,6 +194,7 @@ export default function MeditationHome() {
       alert(`Challenge for ${session.title} is already active!`);
     }
   };
+  
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
