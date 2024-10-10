@@ -264,7 +264,7 @@ const AddToPlanScreen = () => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#F0E6FE',
     paddingTop: 50,
   },
   container: {

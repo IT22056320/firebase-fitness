@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
         marginRight: wp(2),
     },
     updateButton: {
-        backgroundColor: 'purple',
+        backgroundColor: '#6E44FF',
         borderRadius: hp(1),
         padding: hp(2),
         alignItems: 'center',

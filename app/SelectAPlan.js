@@ -116,7 +116,7 @@ const SelectPlanScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8F8', // Light background color for a cleaner look
+    backgroundColor: '#F0E6FE', // Light background color for a cleaner look
     paddingTop:60,
     paddingBottom:80,
   },

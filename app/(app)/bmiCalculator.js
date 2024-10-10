@@ -141,7 +141,7 @@ const BMICalculator = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
-          <Icon name="arrow-back-ios" size={24} color="purple" />
+          <Icon name="arrow-back-ios" size={24} color='#6E44FF'/>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>BMI Calculator</Text>
       </View>
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'purple',
+    color: '#6E44FF',
     marginLeft: 16,
   },
   bmiResultContainer: {
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     color: '#333'
   },
   calculateButton: {
-    backgroundColor: 'purple',
+    backgroundColor: '#6E44FF',
     borderRadius: hp(1),
     padding: hp(2),
     alignItems: 'center',

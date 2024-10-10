@@ -89,6 +89,14 @@ export default function _layout() {
           headerShown: false, // No header for avatar creator
         }}
       />
+
+
+<Stack.Screen
+        name="BloodPressureHeartRate"
+        options={{
+          headerShown: false, // No header for avatar creator
+        }}
+      />
     </Stack>
   );
 }

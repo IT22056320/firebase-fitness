@@ -15,9 +15,8 @@ const Settings = () => {
   };
 
   const handleAvatar = () => {
-    router.push('AvatarCreator'); // Ensure 'AvatarCreator' is registered in your routing configuration
-};
-
+    router.push('AvatarCreator');
+  };
 
   const handleProfile = () => {
     router.push('profile');
@@ -31,11 +30,19 @@ const Settings = () => {
     router.push('AchievementsPage');
   };
 
+  const handleBloodPressure = () => {
+    router.push('BloodPressureHeartRate');
+  };
+
+  const handleSignOut = () => {
+    router.push('/SignIn');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Back button and title */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleBack}>
+        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
           <Icon name="arrow-back-ios" size={24} color="#6E44FF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Settings</Text>
@@ -53,42 +60,63 @@ const Settings = () => {
             Active <Icon name="circle" size={10} color="green" />
           </Text>
         </View>
-        <TouchableOpacity style={styles.avatarButton} onPress={handleAvatar}>
-          <Icon name="person" size={24} color="#6E44FF" />
-          <Text style={styles.avatarText}>Avatar</Text>
-          <Icon name="chevron-right" size={24} color="#6E44FF" />
-        </TouchableOpacity>
       </View>
 
       {/* General Settings */}
       <ScrollView style={styles.settingsSection}>
-        <Text style={styles.sectionTitle}>General Setting</Text>
+        <Text style={styles.sectionTitle}>General Settings</Text>
 
         <TouchableOpacity style={styles.settingsOption} onPress={handleProfile}>
-          <Icon name="person" size={24} color="#6E44FF" />
+          <View style={styles.iconContainer}>
+            <Icon name="person" size={20} color="#6E44FF" />
+          </View>
           <Text style={styles.optionText}>Profile</Text>
           <Icon name="chevron-right" size={24} color="#6E44FF" />
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.settingsOption} onPress={handleAvatar}>
+          <View style={styles.iconContainer}>
+            <Icon name="person-outline" size={20} color="#6E44FF" />
+          </View>
+          <Text style={styles.optionText}>Avatar</Text>
+          <Icon name="chevron-right" size={24} color="#6E44FF" />
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.settingsOption} onPress={handleCalculator}>
-          <Icon name="fitness-center" size={24} color="#6E44FF" />
+          <View style={styles.iconContainer}>
+            <Icon name="fitness-center" size={20} color="#6E44FF" />
+          </View>
           <Text style={styles.optionText}>BMI Calculator</Text>
           <Icon name="chevron-right" size={24} color="#6E44FF" />
         </TouchableOpacity>
 
-        {/* Achievements Button */}
         <TouchableOpacity style={styles.settingsOption} onPress={handleAchievements}>
-          <Icon name="emoji-events" size={24} color="#6E44FF" />
+          <View style={styles.iconContainer}>
+            <Icon name="emoji-events" size={20} color="#6E44FF" />
+          </View>
           <Text style={styles.optionText}>Achievements</Text>
           <Icon name="chevron-right" size={24} color="#6E44FF" />
         </TouchableOpacity>
 
+        {/* Blood Pressure and Heart Rate Button */}
+        <TouchableOpacity style={styles.settingsOption} onPress={handleBloodPressure}>
+          <View style={styles.iconContainer}>
+            <Icon name="favorite" size={20} color="#6E44FF" />
+          </View>
+          <Text style={styles.optionText}>Blood Pressure & Heart Rate</Text>
+          <Icon name="chevron-right" size={24} color="#6E44FF" />
+        </TouchableOpacity>
+
         {/* Logout button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={() => alert('Logging out...')}>
-          <Icon name="exit-to-app" size={24} color="#6E44FF" />
+        <TouchableOpacity style={[styles.settingsOption, styles.logoutButton]} onPress={handleSignOut}>
+          <View style={styles.iconContainer}>
+            <Icon name="exit-to-app" size={20} color="#6E44FF" />
+          </View>
           <Text style={styles.optionText}>Logout</Text>
+          <Icon name="chevron-right" size={24} color="#6E44FF" />
         </TouchableOpacity>
       </ScrollView>
+
       <BottomNav />
     </SafeAreaView>
   );
@@ -97,15 +125,18 @@ const Settings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#F0E6FE',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
   },
+  backButton: {
+    padding: 8,
+  },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#6E44FF',
     marginLeft: 16,
@@ -114,7 +145,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5DFFF',
     padding: 16,
     borderRadius: 12,
-    margin: 16,
+    marginHorizontal: 16,
+    marginVertical: 20,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -128,51 +160,52 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#2C3E50',
   },
   userStatus: {
     fontSize: 14,
-    color: '#000',
-  },
-  avatarButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatarText: {
-    marginLeft: 8,
-    color: '#6E44FF',
+    color: '#2C3E50',
   },
   settingsSection: {
     flex: 1,
     marginHorizontal: 16,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#6E44FF',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   settingsOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  iconContainer: {
+    width: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   optionText: {
-    marginLeft: 16,
     flex: 1,
+    marginLeft: 16,
     fontSize: 16,
+    fontWeight: '500',
+    color: '#34495E',
   },
   logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    marginTop: 32,
+    backgroundColor: '#F8E5E5',
   },
 });
 

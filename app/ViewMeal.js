@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F0F3F5', // Light grey background for a modern look
+    backgroundColor: '#F0E6FE', // Light grey background for a modern look
     paddingTop:60
   },
   backButton: {

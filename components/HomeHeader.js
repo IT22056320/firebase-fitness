@@ -33,6 +33,10 @@ export default function HomeHeader() {
   const handleLogout = async() => {
     await logout();
   }
+
+  const handleBloodPressure = () => {
+    router.push('BloodPressureHeartRate');
+  };
   return (
     <View style={{paddingTop: ios? top : top+10 }} className='flex-row justify-between px-5 bg-indigo-700 pb-6 rounded-b-3xl shadow'>
       <View>
