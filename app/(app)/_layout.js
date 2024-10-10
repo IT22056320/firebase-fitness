@@ -83,7 +83,12 @@ export default function _layout() {
         
         options={{ title: 'Saved Sessions' }}
       />
-
+<Stack.Screen
+        name="CustomGoals"
+        options={{
+          headerShown: false, // No header for avatar creator
+        }}
+      />
     </Stack>
   );
 }

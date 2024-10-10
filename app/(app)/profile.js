@@ -1,54 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import React, { useState } from 'react'
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Modal, FlatList, Platform, Alert } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Feather } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useAuth } from '../context/AuthContext';
+import { countries } from '../../utils/countries'; // assuming you have a country code data source
 import CustomKeyboardView from '../../components/CustomeKeyboardView';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomNav from '../../components/BottomNav';
 import { router } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from 'expo-image-manipulator';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile() {
     const { user, updateProfile, updateUserData } = useAuth();
     const [fullName, setFullName] = useState(user?.username || '');
     const [email, setEmail] = useState(user?.email || '');
     const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
-    const [dateOfBirth, setDateOfBirth] = useState(new Date());
+    const [selectedCountryCode, setSelectedCountryCode] = useState('+94'); // Default to Sri Lanka (+94)
+    const [modalVisible, setModalVisible] = useState(false);
+    const initialDate = user?.dateOfBirth 
+        ? (typeof user.dateOfBirth.toDate === 'function' ? user.dateOfBirth.toDate() : new Date(user.dateOfBirth))
+        : new Date();
+    const [dateOfBirth, setDateOfBirth] = useState(initialDate);
     const [showPicker, setShowPicker] = useState(false);
-    const [profileImage, setProfileImage] = useState(user?.profileUrl || ''); // Image from Firebase or Placeholder
-
-    useEffect(() => {
-        loadProfileImage();
-        if (user?.dateOfBirth) {
-            // Convert Firebase Timestamp to JS Date if it exists
-            const userDate = user?.dateOfBirth.seconds ? new Date(user?.dateOfBirth.seconds * 1000) : new Date(user?.dateOfBirth);
-            setDateOfBirth(userDate);
-        }
-    }, [user?.dateOfBirth]);
-
-    const loadProfileImage = async () => {
-        try {
-            const savedImageUri = await AsyncStorage.getItem('profileImage');
-            if (savedImageUri) {
-                setProfileImage(savedImageUri); // Set the image from AsyncStorage
-            }
-        } catch (error) {
-            console.error('Failed to load profile image:', error);
-        }
-    };
 
     const handleSetting = () => {
         router.push('settings');
-    };
+    }
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
-        setShowPicker(false); // Close picker after date selection
-        setDateOfBirth(currentDate); // Update date state with selected date
+        setShowPicker(Platform.OS === 'ios'); // Close picker on Android, stay open on iOS
+        setDateOfBirth(currentDate);
     };
 
     const showDatePicker = () => {
@@ -62,47 +45,12 @@ export default function Profile() {
         return `${day < 10 ? `0${day}` : day}/${month < 10 ? `0${month}` : month}/${year}`;
     };
 
-    const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (permissionResult.granted === false) {
-            Alert.alert('Permission to access gallery is required!');
-            return;
-        }
-
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            const manipResult = await ImageManipulator.manipulateAsync(
-                result.assets[0].uri,
-                [{ resize: { width: 300, height: 300 } }],
-                { compress: 0.7, format: ImageManipulator.SaveFormat.PNG }
-            );
-            setProfileImage(manipResult.uri); // Set the selected image as profile image
-            saveProfileImage(manipResult.uri); // Save the image locally using AsyncStorage
-        }
-    };
-
-    const saveProfileImage = async (uri) => {
-        try {
-            await AsyncStorage.setItem('profileImage', uri); // Save the image URI to AsyncStorage
-            Alert.alert('Profile Image', 'Profile image updated locally');
-        } catch (error) {
-            console.error('Failed to save profile image:', error);
-        }
-    };
-
     const handleUpdateProfile = async () => {
         const updates = {
             username: fullName,
             email: email,
             phoneNumber: phoneNumber,
-            dateOfBirth: dateOfBirth, // Update Firebase with the new date
-            profileUrl: profileImage, // Update Firebase with the new profile image URL
+            dateOfBirth: dateOfBirth,
         };
 
         const response = await updateProfile(user.userId, updates);
@@ -114,82 +62,115 @@ export default function Profile() {
         }
     };
 
-    
     const handleBack = () => {
         router.back();
       };
+
     return (
-        <CustomKeyboardView>
-            <SafeAreaView style={styles.container}>
+      <CustomKeyboardView>
+        <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Feather name="chevron-left" size={hp(3)} color="purple" onPress={handleBack} />
                 <Text style={styles.headerTitle}>Profile</Text>
                 <Feather name="settings" size={hp(3)} color="purple" onPress={handleSetting}/>
             </View>
+            {/* Rest of your profile screen content */}
+            <View style={styles.profileImageContainer}>
+                <Image
+                    source={{ uri: user?.profileUrl || 'https://via.placeholder.com/150' }}
+                    style={styles.profileImage}
+                />
+                <View style={styles.cameraIconContainer}>
+                    <Feather name="camera" size={hp(2)} color="white" />
+                </View>
+            </View>
 
-                <View style={styles.profileImageContainer}>
-                    <Image source={{ uri: profileImage || 'https://via.placeholder.com/150' }} style={styles.profileImage} />
-                    <TouchableOpacity onPress={pickImage} style={styles.cameraIconContainer}>
-                        <Feather name="camera" size={hp(2)} color="white" />
-                    </TouchableOpacity>
+            <View style={styles.formContainer}>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Full Name</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={fullName}
+                        onChangeText={setFullName}
+                        placeholder="Enter your name"
+                    />
                 </View>
 
-                <View style={styles.formContainer}>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Full Name</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={fullName}
-                            onChangeText={setFullName}
-                            placeholder="Enter your name"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Phone Number</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={phoneNumber}
-                            onChangeText={setPhoneNumber}
-                            placeholder="Enter your phone number"
-                            keyboardType="phone-pad"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Email</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={email}
-                            onChangeText={setEmail}
-                            placeholder="Enter your email"
-                            keyboardType="email-address"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Date of Birth</Text>
-                        <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
-                            <Text style={styles.dateText}>{formatDate(dateOfBirth)}</Text>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Phone Number</Text>
+                    <View style={styles.phoneInputContainer}>
+                        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.countryCodeButton}>
+                        <Text>{selectedCountryCode}</Text>
                         </TouchableOpacity>
-                        {showPicker && (
-                            <DateTimePicker
-                                value={dateOfBirth}
-                                mode="date"
-                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                onChange={onChange}
-                                maximumDate={new Date()}
-                            />
-                        )}
+                        <TextInput
+                        style={styles.input}
+                        value={phoneNumber}
+                        onChangeText={setPhoneNumber}
+                        placeholder="Enter your phone number"
+                        keyboardType="phone-pad"
+                        />
+                    </View>
+                    <Modal
+                        visible={modalVisible}
+                        animationType="slide"
+                        transparent={true}
+                        onRequestClose={() => setModalVisible(false)}
+                    >
+                        <View style={styles.modalView}>
+                        <FlatList
+                            data={countries}
+                            renderItem={({ item }) => (
+                            <TouchableOpacity
+                                style={styles.countryItem}
+                                onPress={() => {
+                                setSelectedCountryCode(item.code);
+                                setModalVisible(false);
+                                }}
+                            >
+                                <Text>{`${item.name} (${item.code})`}</Text>
+                            </TouchableOpacity>
+                            )}
+                            keyExtractor={(item) => item.code}
+                        />
+                        </View>
+                    </Modal>
                     </View>
 
-                    <TouchableOpacity style={styles.updateButton} onPress={handleUpdateProfile}>
-                        <Text style={styles.updateButtonText}>Update Profile</Text>
-                    </TouchableOpacity>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={email}
+                        onChangeText={setEmail}
+                        placeholder="Enter your email"
+                        keyboardType="email-address"
+                    />
                 </View>
-                <BottomNav />
-            </SafeAreaView>
-        </CustomKeyboardView>
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Date of Birth</Text>
+                    <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
+                        <Text style={styles.dateText}>{formatDate(dateOfBirth)}</Text>
+                    </TouchableOpacity>
+                    {showPicker && (
+                        <DateTimePicker
+                            value={dateOfBirth}
+                            mode="date"
+                            is24Hour={true}
+                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                            onChange={onChange}
+                            maximumDate={new Date()} // Prevent future dates
+                        />
+                    )}
+                </View>
+
+                <TouchableOpacity style={styles.updateButton} onPress={handleUpdateProfile}>
+                    <Text style={styles.updateButtonText}>Update Profile</Text>
+                </TouchableOpacity>
+            </View>
+            <BottomNav />
+        </SafeAreaView>
+      </CustomKeyboardView>
     );
 }
 
@@ -231,7 +212,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: hp(2),
         padding: wp(5),
-        marginBottom: hp(12),
+        marginBottom: hp(12), 
     },
     inputContainer: {
         marginBottom: hp(2),
@@ -249,6 +230,13 @@ const styles = StyleSheet.create({
         fontSize: hp(2),
         flex: 1,
     },
+    phoneInputContainer: {
+        flexDirection: 'row',
+    },
+    countryCodePicker: {
+        flex: 1,
+        marginRight: wp(2),
+    },
     updateButton: {
         backgroundColor: 'purple',
         borderRadius: hp(1),
@@ -260,8 +248,34 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: hp(2),
         fontWeight: 'bold',
-    },
-    dateButton: {
+    }, 
+    countryCodeButton: {
+        backgroundColor: '#F0E6FE',
+        padding: 10,
+        borderRadius: hp(1),
+        marginRight: 10,
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
+      countryItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+      },
+      dateButton: {
         borderRadius: hp(1),
         padding: hp(1.5),
         fontSize: hp(2),

@@ -56,12 +56,7 @@ export default function Home() {
           <BodyParts />
         </View>
 
-        {/* Fitness Journal Button */}
-        <View style={styles.fitnessJournalContainer}>
-          <TouchableOpacity onPress={handleNavigateToFitnessJournal} style={styles.fitnessJournalButton}>
-            <Text style={styles.fitnessJournalText}>Fitness Journal</Text>
-          </TouchableOpacity>
-        </View>
+       
       </ScrollView>
       <BottomNav />
     </SafeAreaView>
@@ -73,7 +68,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     paddingVertical: 10,
-    paddingBottom:80
+    paddingBottom:80,
+    paddingTop:-40
     
   },
   headerContainer: {

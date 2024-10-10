@@ -27,14 +27,14 @@ export default function HomeHeader() {
   const handleSettings = () => {
     router.push('settings');
   };  
-  const handleAvatar = async() => {
-    router.push('avatarCreator');
+  const handleGoals = async() => {
+    router.push('CustomGoals');
   }
   const handleLogout = async() => {
     await logout();
   }
   return (
-    <View style={{paddingTop: ios? top : top+10 }} className='flex-row justify-between px-5 bg-indigo-400 pb-6 rounded-b-3xl shadow'>
+    <View style={{paddingTop: ios? top : top+10 }} className='flex-row justify-between px-5 bg-indigo-700 pb-6 rounded-b-3xl shadow'>
       <View>
         <Text style={{fontSize: hp(3)}} className='font-medium text-white'>Health360</Text>
       </View>
@@ -77,8 +77,8 @@ export default function HomeHeader() {
             />
             <Devider />
             <MenuItem 
-              text='avatar'
-              action={handleAvatar}
+              text='CustomGoals'
+              action={handleGoals}
               value={null}
               icon={<Feather name='user-check' size={hp(2.5)} color='#737373' />}
             />

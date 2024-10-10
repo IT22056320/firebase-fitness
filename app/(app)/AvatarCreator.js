@@ -1,161 +1,130 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Avatars from '@dicebear/avatars';
-import * as AvataaarsSprites from '@dicebear/avatars-avataaars-sprites';
-import { SvgXml } from 'react-native-svg';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-export default function AvatarCreator() {
-    const [skinColor, setSkinColor] = useState('light');
-    const [hairStyle, setHairStyle] = useState('short');
-    const [clothes, setClothes] = useState('casual');
-    const [eyeType, setEyeType] = useState('default');
-    const [facialHair, setFacialHair] = useState('none');
-    const [accessories, setAccessories] = useState('none');
-    const [avatarSvg, setAvatarSvg] = useState(null); // Avatar SVG code
+const AvatarCreator = () => {
+  const [skinColor, setSkinColor] = useState('#FFDAB9'); // Default skin color
+  const [hairColor, setHairColor] = useState('#4B3D29'); // Default hair color
+  const [clothingColor, setClothingColor] = useState('#4B88A2'); // Default clothing color
+  const [eyes, setEyes] = useState('😊'); // Default eyes emoji
+  const [mouth, setMouth] = useState('😃'); // Default mouth emoji
 
-    const generateAvatar = async () => {
-        const avatarOptions = {
-            'skin': skinColor === 'light' ? 'pale' : 'brown',
-            'top': hairStyle === 'short' ? 'shortHair' : 'longHair',
-            'clothes': clothes === 'casual' ? 'shirtCrewNeck' : 'blazerShirt',
-            'eyes': eyeType,
-            'facialHair': facialHair === 'none' ? 'blank' : facialHair,
-            'accessories': accessories === 'none' ? 'none' : accessories,
-        };
+  return (
+    <View style={styles.container}>
+      <View style={[styles.avatarContainer, { backgroundColor: skinColor }]}>
+        <Text style={styles.hair}>👩‍🦰</Text> {/* Static hair emoji */}
+        <Text style={styles.eyes}>{eyes}</Text> {/* Eyes emoji wrapped in <Text> */}
+        <Text style={styles.mouth}>{mouth}</Text> {/* Mouth emoji wrapped in <Text> */}
+        <Text style={[styles.clothes, { color: clothingColor }]}>👕</Text> {/* Clothing emoji */}
+      </View>
 
-        // Generate an SVG avatar using DiceBear's Avataaars library
-        let avatars = new Avatars.default(AvataaarsSprites.default, {
-            radius: 50,
-            ...avatarOptions,
-        });
-        
-        let avatarSvgString = avatars.create('random-seed'); // You can pass in a seed value for consistent avatars
+      <View style={styles.options}>
+        <Text>Select Skin Color:</Text>
+        <TouchableOpacity onPress={() => setSkinColor('#FFDAB9')}>
+          <Text style={styles.optionText}>Skin Color 1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setSkinColor('#F4CBA7')}>
+          <Text style={styles.optionText}>Skin Color 2</Text>
+        </TouchableOpacity>
+      </View>
 
-        setAvatarSvg(avatarSvgString);
+      <View style={styles.options}>
+        <Text>Select Hair Color:</Text>
+        <TouchableOpacity onPress={() => setHairColor('#4B3D29')}>
+          <Text style={styles.optionText}>Hair Color 1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setHairColor('#7A5B3D')}>
+          <Text style={styles.optionText}>Hair Color 2</Text>
+        </TouchableOpacity>
+      </View>
 
-        // Save avatar selections
-        await AsyncStorage.setItem('userAvatar', JSON.stringify(avatarOptions));
-    };
+      <View style={styles.options}>
+        <Text>Select Eyes:</Text>
+        <TouchableOpacity onPress={() => setEyes('😊')}>
+          <Text style={styles.optionText}>Happy Eyes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setEyes('😎')}>
+          <Text style={styles.optionText}>Cool Eyes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setEyes('😐')}>
+          <Text style={styles.optionText}>Neutral Eyes</Text>
+        </TouchableOpacity>
+      </View>
 
-    return (
-        <ScrollView>
-            <View style={styles.container}>
-                <Text style={styles.header}>Create Your Avatar</Text>
+      <View style={styles.options}>
+        <Text>Select Mouth:</Text>
+        <TouchableOpacity onPress={() => setMouth('😃')}>
+          <Text style={styles.optionText}>Smile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setMouth('😶')}>
+          <Text style={styles.optionText}>Neutral</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setMouth('😢')}>
+          <Text style={styles.optionText}>Sad</Text>
+        </TouchableOpacity>
+      </View>
 
-                <View style={styles.avatarPreview}>
-                    {avatarSvg ? (
-                        <SvgXml
-                            width="100%"
-                            height="100%"
-                            xml={avatarSvg}
-                        />
-                    ) : (
-                        <Text style={styles.avatarText}>Avatar Preview</Text>
-                    )}
-                </View>
-
-                {/* Skin Color Picker */}
-                <Text style={styles.label}>Select Skin Color</Text>
-                <Picker selectedValue={skinColor} onValueChange={(itemValue) => setSkinColor(itemValue)} style={styles.picker}>
-                    <Picker.Item label="Light" value="light" />
-                    <Picker.Item label="Dark" value="dark" />
-                </Picker>
-
-                {/* Hair Style Picker */}
-                <Text style={styles.label}>Select Hair Style</Text>
-                <Picker selectedValue={hairStyle} onValueChange={(itemValue) => setHairStyle(itemValue)} style={styles.picker}>
-                    <Picker.Item label="Short" value="short" />
-                    <Picker.Item label="Long" value="long" />
-                </Picker>
-
-                {/* Clothes Picker */}
-                <Text style={styles.label}>Select Clothes</Text>
-                <Picker selectedValue={clothes} onValueChange={(itemValue) => setClothes(itemValue)} style={styles.picker}>
-                    <Picker.Item label="Casual" value="casual" />
-                    <Picker.Item label="Formal" value="formal" />
-                </Picker>
-
-                {/* Eye Type Picker */}
-                <Text style={styles.label}>Select Eye Type</Text>
-                <Picker selectedValue={eyeType} onValueChange={(itemValue) => setEyeType(itemValue)} style={styles.picker}>
-                    <Picker.Item label="Default" value="default" />
-                    <Picker.Item label="Happy" value="happy" />
-                    <Picker.Item label="Wink" value="wink" />
-                    <Picker.Item label="Squint" value="squint" />
-                    <Picker.Item label="Surprised" value="surprised" />
-                </Picker>
-
-                {/* Facial Hair Picker */}
-                <Text style={styles.label}>Select Facial Hair</Text>
-                <Picker selectedValue={facialHair} onValueChange={(itemValue) => setFacialHair(itemValue)} style={styles.picker}>
-                    <Picker.Item label="None" value="none" />
-                    <Picker.Item label="Beard" value="beardMajestic" />
-                    <Picker.Item label="Moustache" value="moustacheFancy" />
-                    <Picker.Item label="Goatee" value="goatee" />
-                </Picker>
-
-                {/* Accessories Picker */}
-                <Text style={styles.label}>Select Accessories</Text>
-                <Picker selectedValue={accessories} onValueChange={(itemValue) => setAccessories(itemValue)} style={styles.picker}>
-                    <Picker.Item label="None" value="none" />
-                    <Picker.Item label="Glasses" value="round" />
-                    <Picker.Item label="Sunglasses" value="sunglasses" />
-                    <Picker.Item label="Hat" value="hat" />
-                </Picker>
-
-                <TouchableOpacity style={styles.createButton} onPress={generateAvatar}>
-                    <Text style={styles.createButtonText}>Create Avatar</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
-    );
-}
+      <View style={styles.options}>
+        <Text>Select Clothing Color:</Text>
+        <TouchableOpacity onPress={() => setClothingColor('#4B88A2')}>
+          <Text style={styles.optionText}>Clothes Color 1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setClothingColor('#E84545')}>
+          <Text style={styles.optionText}>Clothes Color 2</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: wp(5),
-        backgroundColor: '#f9f9f9',
-    },
-    header: {
-        fontSize: hp(3),
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginVertical: hp(2),
-    },
-    avatarPreview: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: hp(30),
-        marginBottom: hp(2),
-        backgroundColor: '#e0e0e0',
-        borderRadius: 10,
-    },
-    avatarText: {
-        fontSize: hp(2),
-        color: '#666',
-    },
-    label: {
-        fontSize: hp(2),
-        fontWeight: '600',
-        marginBottom: hp(1),
-    },
-    picker: {
-        height: hp(5),
-        marginBottom: hp(2),
-    },
-    createButton: {
-        backgroundColor: '#6E44FF',
-        padding: hp(2),
-        borderRadius: hp(1),
-        alignItems: 'center',
-    },
-    createButtonText: {
-        color: 'white',
-        fontSize: hp(2),
-        fontWeight: 'bold',
-    },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  avatarContainer: {
+    width: 150,
+    height: 250,
+    borderRadius: 75,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#000',
+    marginBottom: 20,
+  },
+  hair: {
+    fontSize: 50,
+    position: 'absolute',
+    top: 20,
+  },
+  eyes: {
+    fontSize: 50,
+    position: 'absolute',
+    top: 80,
+  },
+  mouth: {
+    fontSize: 50,
+    position: 'absolute',
+    top: 150,
+  },
+  clothes: {
+    fontSize: 60,
+    position: 'absolute',
+    bottom: 0,
+  },
+  options: {
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  optionText: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5,
+    textAlign: 'center',
+    marginTop: 5,
+  },
 });
+
+export default AvatarCreator;

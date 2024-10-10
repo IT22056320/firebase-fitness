@@ -19,6 +19,8 @@ export default function SettingsLayout() {
           headerShown: false, // No header for avatar creator
         }}
       />
+
+
     </Stack>
   );
 }

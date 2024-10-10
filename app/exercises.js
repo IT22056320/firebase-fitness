@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(5),
     flex: 1,
     backgroundColor: 'white',
+    paddingTop:30
   },
   headerText: {
     fontSize: hp(3),
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
   backButton: {
     marginTop: 20,
     padding: 15,
-    backgroundColor: '#E11D48',
+    backgroundColor: '#6E44FF',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
