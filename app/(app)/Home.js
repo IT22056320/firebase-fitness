@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -8,16 +8,29 @@ import ImageSlider from '../../components/ImageSlider';
 import BodyParts from '../../components/BodyParts';
 import { useRouter } from 'expo-router';
 import BottomNav from '../../components/BottomNav';
+import { registerForPushNotificationsAsync, generateNotification } from '../../utils/notifications'
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+  }),
+});
 
 export default function Home() {
   const router = useRouter();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
 
   const handleSignOut = () => {
     router.push('/SignIn');
   };
 
   // Navigate to Fitness Journal screen
-  const handleNavigateToFitnessJournal = () => {
+  const handleNavigateToFitnessJournal = async () => {
     router.push('/fitnessJournal');
   };
 

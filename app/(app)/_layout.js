@@ -13,6 +13,10 @@ export default function _layout() {
     <Stack>
       {/* Home screen */}
       <Stack.Screen
+        name="SignIn"
+      />
+      {/* Home screen */}
+      <Stack.Screen
         name="Home"
         options={{
           header: () => <HomeHeader />,

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TextInput, Image, Pressable, Alert, KeyboardAvoidingView } from 'react-native';
+import { LogBox, View, Text, TouchableOpacity, TextInput, Image, Pressable, Alert, KeyboardAvoidingView } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -7,6 +7,9 @@ import { useRouter } from 'expo-router';
 import Loading from '../components/Loading';
 import CustomKeyboardView from '../components/CustomeKeyboardView';
 import { useAuth } from './context/AuthContext';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 export default function SignIn() {
 

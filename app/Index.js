@@ -7,6 +7,7 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 
 export default function StartPage() {
+
   const router = useRouter();
   return (
     <View style={{ flex: 1, justifyContent: 'flex-end' }}>
