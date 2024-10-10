@@ -8,7 +8,7 @@ const mealPlans = {
     {
       meal: 'High-Protein Breakfast',
       description: 'Oatmeal with peanut butter, eggs, and a protein shake.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'), // Add image for each meal
+      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
     },
     {
       meal: 'Lunch',
@@ -112,19 +112,19 @@ const CustomizedMealPlan = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-        <Text style={styles.backButtonText}>Back</Text>
-      </TouchableOpacity>
+     
 
       <Text style={styles.title}>Meal Plan for {bmiCategory} BMI</Text>
-      
-      <ScrollView style={styles.mealPlanContainer}>
+
+      <ScrollView style={styles.mealPlanContainer} contentContainerStyle={styles.mealPlanContent}>
         {mealPlan.length > 0 ? (
           mealPlan.map((item, index) => (
             <View key={index} style={styles.mealCard}>
               <Image source={item.image} style={styles.mealImage} />
-              <Text style={styles.mealTitle}>{item.meal}</Text>
-              <Text style={styles.mealDescription}>{item.description}</Text>
+              <View style={styles.mealTextContainer}>
+                <Text style={styles.mealTitle}>{item.meal}</Text>
+                <Text style={styles.mealDescription}>{item.description}</Text>
+              </View>
             </View>
           ))
         ) : (
@@ -140,54 +140,66 @@ const CustomizedMealPlan = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0E6FE',
-    padding: 20,
-    justifyContent: 'center',
+    backgroundColor: '#F7F7F7',
+    paddingHorizontal: 20,
   },
   backButton: {
     padding: 10,
     backgroundColor: '#4A148C',
-    borderRadius: 5,
-    marginBottom: 20,
-    alignSelf: 'flex-start',
+    borderRadius: 10,
+    marginTop: 20,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   backButtonText: {
     color: '#FFF',
     fontSize: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    textAlign: 'center',
     color: '#4A148C',
-    marginBottom: 20,
+    textAlign: 'center',
+    marginVertical: 20,
   },
   mealPlanContainer: {
     marginTop: 10,
   },
+  mealPlanContent: {
+    paddingBottom: 100,
+  },
   mealCard: {
     backgroundColor: '#FFF',
-    borderRadius: 10,
+    borderRadius: 20,
     padding: 15,
-    marginBottom: 15,
+    marginBottom: 20,
+    flexDirection: 'row',
     alignItems: 'center',
+    elevation: 5, // Shadow effect
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   mealImage: {
-    width: 150,
+    width: 100,
     height: 100,
     borderRadius: 10,
-    marginBottom: 10,
+    marginRight: 15,
+  },
+  mealTextContainer: {
+    flex: 1,
   },
   mealTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#4A148C',
     marginBottom: 5,
   },
   mealDescription: {
     fontSize: 16,
-    color: '#333',
-    textAlign: 'center',
+    color: '#555',
   },
 });
 

@@ -4,26 +4,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient'; // Import for gradients
 import BottomNav from '../../components/BottomNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
 const meditationSessionsData = [
-  { id: '1', title: 'Mindful Breathing', duration: '1', level: 'Beginner', category: 'Focus', image: require('../../assets/images/back.png'), type: 'timer', description: 'A focused breathing session aimed at enhancing concentration and relaxation.', instructions: '1. Find a quiet place... 2. Start breathing slowly...', challenge: { goal: 5, reward: 'Relaxation Badge', completed: false } },
-  { id: '2', title: 'Gratitude Meditation', duration: '10', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/back.png'), type: 'guided', description: 'Gratitude meditation helps in cultivating a sense of appreciation and positive energy.', instructions: '1. Sit comfortably... 2. Reflect on things you are grateful for...', challenge: { goal: 3, reward: 'Gratitude Badge', completed: false } },
-  { id: '3', title: 'Calmness', duration: '10', level: 'Expert', category: 'Success', image: require('../../assets/images/back.png'), type: 'timer', description: 'Calmness meditation designed to help experts practice deeper states of relaxation and focus.', instructions: '1. Sit quietly... 2. Focus on releasing tension...', challenge: { goal: 7, reward: 'Calmness Badge', completed: false } },
-  { id: '4', title: 'Focus Booster', duration: '15', level: 'Intermediate', category: 'Focus', image: require('../../assets/images/back.png'), type: 'timer', description: 'Focus booster meditation for intermediate practitioners aiming to enhance focus.', instructions: '1. Sit down... 2. Breathe and focus on a single thought...', challenge: { goal: 4, reward: 'Focus Badge', completed: false } },
-  { id: '5', title: 'Positive Affirmations', duration: '20', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/back.png'), type: 'guided', description: 'Positive affirmations to help cultivate self-belief and positive mindset.', instructions: '1. Repeat positive affirmations like “I am capable”...', challenge: { goal: 6, reward: 'Affirmation Badge', completed: false } },
-  { id: '6', title: 'Visualize Success', duration: '12', level: 'Intermediate', category: 'Success', image: require('../../assets/images/back.png'), type: 'timer', description: 'Visualization of success to help envision goals and reinforce positive outcomes.', instructions: '1. Visualize achieving your goals...', challenge: { goal: 5, reward: 'Success Badge', completed: false } },
-  { id: '7', title: 'Body Scan Meditation', duration: '10', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'guided', description: 'Body scan meditation focused on awareness of physical sensations for relaxation.', instructions: '1. Lay down... 2. Focus on scanning each part of your body for tension...', challenge: { goal: 3, reward: 'Body Awareness Badge', completed: false } },
-  { id: '8', title: 'Relax & Recover', duration: '25', level: 'Advanced', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'guided', description: 'Relax and recover with this advanced guided meditation session.', instructions: '1. Relax in a quiet place... 2. Allow yourself to unwind completely...', challenge: { goal: 8, reward: 'Recovery Badge', completed: false } },
-  { id: '9', title: 'Loving Kindness Meditation', duration: '15', level: 'Intermediate', category: 'Positivity', image: require('../../assets/images/back.png'), type: 'guided', description: 'Cultivate love and kindness towards yourself and others.', instructions: '1. Sit comfortably... 2. Focus on feelings of compassion and love...', challenge: { goal: 5, reward: 'Kindness Badge', completed: false } },
-  { id: '10', title: 'Breath Counting Meditation', duration: '5', level: 'Beginner', category: 'Focus', image: require('../../assets/images/back.png'), type: 'timer', description: 'A simple meditation to improve focus by counting your breaths.', instructions: '1. Find a quiet place... 2. Start counting each breath...', challenge: { goal: 6, reward: 'Focus Badge', completed: false } },
-  { id: '11', title: 'Mountain Visualization', duration: '12', level: 'Intermediate', category: 'Success', image: require('../../assets/images/back.png'), type: 'guided', description: 'Visualize a mountain to strengthen your mental resilience.', instructions: '1. Imagine yourself as a strong mountain...', challenge: { goal: 4, reward: 'Resilience Badge', completed: false } },
-  { id: '12', title: 'Sound Meditation', duration: '8', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'timer', description: 'Focus on surrounding sounds to increase awareness and relaxation.', instructions: '1. Find a quiet place... 2. Focus on the sounds around you...', challenge: { goal: 4, reward: 'Sound Awareness Badge', completed: false } },
-  { id: '13', title: 'Progressive Muscle Relaxation', duration: '15', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'guided', description: 'A guided relaxation to release muscle tension step by step.', instructions: '1. Tense and release each muscle group...', challenge: { goal: 6, reward: 'Muscle Relaxation Badge', completed: false } },
-  { id: '14', title: 'Mindful Eating Meditation', duration: '10', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/back.png'), type: 'guided', description: 'Focus on mindful eating to promote a healthy relationship with food.', instructions: '1. Eat slowly and focus on each bite...', challenge: { goal: 3, reward: 'Healthy Eating Badge', completed: false } },
-  { id: '15', title: 'Gratitude Journaling', duration: '5', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/back.png'), type: 'guided', description: 'Practice gratitude journaling to improve mood and well-being.', instructions: '1. Write down things you are grateful for...', challenge: { goal: 4, reward: 'Gratitude Journal Badge', completed: false } },
+  { id: '1', title: 'Mindful Breathing', duration: '1', level: 'Beginner', category: 'Focus', image: require('../../assets/images/D1.jpeg'), type: 'timer', description: 'A focused breathing session aimed at enhancing concentration and relaxation.', instructions: '1. Find a quiet place... 2. Start breathing slowly...', challenge: { goal: 5, reward: 'Relaxation Badge', completed: false } },
+  { id: '2', title: 'Gratitude Meditation', duration: '10', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/D2.png'), type: 'guided', description: 'Gratitude meditation helps in cultivating a sense of appreciation and positive energy.', instructions: '1. Sit comfortably... 2. Reflect on things you are grateful for...', challenge: { goal: 3, reward: 'Gratitude Badge', completed: false } },
+  { id: '3', title: 'Calmness', duration: '10', level: 'Expert', category: 'Success', image: require('../../assets/images/D3.png'), type: 'timer', description: 'Calmness meditation designed to help experts practice deeper states of relaxation and focus.', instructions: '1. Sit quietly... 2. Focus on releasing tension...', challenge: { goal: 7, reward: 'Calmness Badge', completed: false } },
+  { id: '4', title: 'Focus Booster', duration: '15', level: 'Intermediate', category: 'Focus', image: require('../../assets/images/D4.jpeg'), type: 'timer', description: 'Focus booster meditation for intermediate practitioners aiming to enhance focus.', instructions: '1. Sit down... 2. Breathe and focus on a single thought...', challenge: { goal: 4, reward: 'Focus Badge', completed: false } },
+  { id: '5', title: 'Positive Affirmations', duration: '20', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/D5.jpg'), type: 'guided', description: 'Positive affirmations to help cultivate self-belief and positive mindset.', instructions: '1. Repeat positive affirmations like “I am capable”...', challenge: { goal: 6, reward: 'Affirmation Badge', completed: false } },
+
+  
+  { id: '6', title: 'Stress Relief Meditation', duration: '12', level: 'Intermediate', category: 'Physical Health', image: require('../../assets/images/G1.jpeg'), type: 'guided', description: 'A session focused on releasing physical and mental stress.', instructions: '1. Sit in a comfortable position... 2. Breathe deeply and focus on each part of your body, relaxing it...', challenge: { goal: 3, reward: 'Stress-Free Badge', completed: false } },
+  { id: '7', title: 'Energy Booster', duration: '10', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/G2.jpeg'), type: 'timer', description: 'This session helps you re-energize and gain focus for the day.', instructions: '1. Find a calm space... 2. Visualize energy flowing through your body...', challenge: { goal: 5, reward: 'Energy Badge', completed: false } },
+  { id: '8', title: 'Self-Compassion Meditation', duration: '8', level: 'Intermediate', category: 'Positivity', image: require('../../assets/images/G3.jpeg'), type: 'guided', description: 'This meditation encourages self-kindness and reduces negative self-talk.', instructions: '1. Sit comfortably... 2. Repeat kind phrases towards yourself...', challenge: { goal: 4, reward: 'Compassion Badge', completed: false } },
+  { id: '9', title: 'Creative Visualization', duration: '15', level: 'Advanced', category: 'Focus', image: require('../../assets/images/G4.jpeg'), type: 'guided', description: 'Use your imagination to visualize success and reach your goals.', instructions: '1. Visualize yourself achieving your goals... 2. Focus on positive outcomes...', challenge: { goal: 6, reward: 'Visualization Badge', completed: false } },
+  { id: '10', title: 'Sleep Meditation', duration: '20', level: 'Beginner', category: 'Physical Health', image: require('../../assets/images/G5.jpeg'), type: 'guided', description: 'A calming session to help you relax and prepare for a good night’s sleep.', instructions: '1. Lie down in a comfortable position... 2. Focus on slowing your breath and releasing tension...', challenge: { goal: 7, reward: 'Sleep Badge', completed: false } },
+  { id: '11', title: 'Emotional Balance', duration: '18', level: 'Advanced', category: 'Success', image: require('../../assets/images/G6.jpeg'), type: 'guided', description: 'A meditation aimed at maintaining emotional balance during difficult situations.', instructions: '1. Sit quietly... 2. Focus on your emotions and gently bring them to a neutral state...', challenge: { goal: 5, reward: 'Balance Badge', completed: false } },
+  { id: '12', title: 'Inner Peace Meditation', duration: '12', level: 'Intermediate', category: 'Positivity', image: require('../../assets/images/G7.jpeg'), type: 'guided', description: 'Find inner calm and peace in this relaxing meditation.', instructions: '1. Find a quiet place... 2. Breathe deeply and focus on a calming thought...', challenge: { goal: 6, reward: 'Peace Badge', completed: false } },
 ];
 
 
@@ -195,87 +195,31 @@ export default function MeditationHome() {
     }
   };
 
-  const updateChallengeProgress = async (session) => {
-    try {
-      const savedChallenges = await AsyncStorage.getItem('completedChallenges');
-      let parsedChallenges = savedChallenges ? JSON.parse(savedChallenges) : [];
-  
-      const challengeIndex = parsedChallenges.findIndex(challenge => challenge.id === session.id);
-  
-      if (challengeIndex >= 0) {
-        // Increment progress
-        parsedChallenges[challengeIndex].progress += 1;
-  
-        // Check if the challenge is now complete
-        if (parsedChallenges[challengeIndex].progress >= session.challenge.goal) {
-          parsedChallenges[challengeIndex].completed = true;  // Mark as completed
-          giveReward(session.challenge.reward);  // Give the reward if completed
-        }
-      } else {
-        // If this challenge is not tracked yet, add it with initial progress
-        parsedChallenges.push({
-          id: session.id,
-          progress: 1,
-          goal: session.challenge.goal,
-          reward: session.challenge.reward,
-          completed: false,
-        });
-      }
-  
-      // Save updated challenges back to AsyncStorage
-      await AsyncStorage.setItem('completedChallenges', JSON.stringify(parsedChallenges));
-  
-      // Update local state
-      setCompletedChallenges(parsedChallenges);
-  
-      // Update activeChallenges to remove any completed ones
-      const updatedActiveChallenges = activeChallenges.filter(ch => ch.id !== session.id || !parsedChallenges[challengeIndex]?.completed);
-      setActiveChallenges(updatedActiveChallenges);
-      saveActiveChallengesToStorage(updatedActiveChallenges);
-  
-    } catch (error) {
-      console.error('Error updating challenge progress:', error);
-    }
-  };
-  
-
-  const giveReward = async (reward) => {
-    try {
-      const savedRewards = await AsyncStorage.getItem('rewards');
-      let rewardList = savedRewards ? JSON.parse(savedRewards) : [];
-
-      if (!rewardList.includes(reward)) {
-        rewardList.push(reward);
-        await AsyncStorage.setItem('rewards', JSON.stringify(rewardList));
-        alert(`You earned the ${reward} reward! 🏆`);
-      } else {
-        alert('You already earned this reward.');
-      }
-    } catch (error) {
-      console.error('Error giving reward:', error);
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar style="dark" />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}>
           {/* Header Section */}
           <View style={styles.headerContainer}>
             <View style={styles.textContainer}>
-              <Text style={[styles.headerText, styles.neutralText]}>Guided & Timer Sessions</Text>
+              <Text style={[styles.headerText, styles.neutralText]}>Sessions</Text>
             </View>
-
             {/* Favorites Button */}
             <TouchableOpacity onPress={navigateToSavedSessions} style={styles.favoritesButton}>
-              <Ionicons name="heart" size={hp(4)} color="#FF0000" />
-            </TouchableOpacity>
+              <LinearGradient
+                colors={['#6E44FF', '#9B5FFF']}
+                style={styles.favoritesButtonGradient}
+              >
+                <Ionicons name="heart" size={hp(4)} color="#FFF" />
+              </LinearGradient>
+            </TouchableOpacity>      
           </View>
-
+        <View>
+        <TouchableOpacity onPress={() => router.push('/ChallengesPage')} style={styles.challengeButton}>
+        <Text style={styles.challengeButtonText}>View Challenges</Text>
+      </TouchableOpacity>
+        </View>
           {/* Search Bar */}
           <View>
             <TextInput
@@ -388,12 +332,9 @@ export default function MeditationHome() {
       </KeyboardAvoidingView>
 
       {/* Button to navigate to Challenges page */}
-      <TouchableOpacity onPress={() => router.push('/ChallengesPage')} style={styles.challengeButton}>
-        <Text style={styles.challengeButtonText}>View Challenges</Text>
-      </TouchableOpacity>
+     
 
       <BottomNav />
-
     </SafeAreaView>
   );
 }
@@ -401,35 +342,53 @@ export default function MeditationHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#F0E6FE',
     paddingVertical: 10,
-    paddingBottom:80
+    paddingBottom: 80,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: wp(5),
+    paddingBottom: 20, // Added padding for spacing
   },
   textContainer: {
     justifyContent: 'center',
   },
   headerText: {
-    fontSize: hp(4),
-    fontWeight: 'bold',
-    letterSpacing: 1.5,
+    fontSize: hp(3.5),
+    fontWeight: '700',
+    color: '#4B4B4B',
+    
   },
   favoritesButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingRight: 10,
+    paddingRight: 30,
+    borderRadius: 50,
+    marginRight: 15,
+  },
+  favoritesButtonGradient: {
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 50,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   searchBar: {
     backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 15,
+    padding: 12,
     marginHorizontal: wp(5),
     marginBottom: 20,
+    borderColor: '#ccc',
+    borderWidth: 1,
   },
   filterContainer: {
     marginBottom: 20,
@@ -437,10 +396,10 @@ const styles = StyleSheet.create({
   },
   filterTab: {
     width: wp(25),
-    paddingVertical: 10,
+    paddingVertical: 12,
     backgroundColor: '#f0f0f0',
     borderRadius: 20,
-    marginRight: 10,
+    marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -463,18 +422,23 @@ const styles = StyleSheet.create({
     fontSize: hp(3),
     fontWeight: 'bold',
     marginBottom: 10,
+    paddingHorizontal: 10, // Added padding
   },
   horizontalScroll: {
     paddingHorizontal: wp(5),
   },
   sessionContainer: {
-    width: wp(40),
+    width: wp(42), // Increased width for better display
     backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 10,
-    marginRight: 10,
+    borderRadius: 15,
+    padding: 15,
+    marginRight: 15, // Added margin for spacing between cards
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   sessionImage: {
     width: wp(30),
@@ -497,6 +461,7 @@ const styles = StyleSheet.create({
   challengeText: {
     fontSize: 12,
     color: 'blue',
+    marginTop: 5,
   },
   challengeRewardText: {
     fontSize: 12,
@@ -518,11 +483,11 @@ const styles = StyleSheet.create({
   },
   challengeButton: {
     backgroundColor: '#6E44FF',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 15,
+    paddingHorizontal: 25,
     borderRadius: 10,
     alignSelf: 'center',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   challengeButtonText: {
     fontSize: 18,
@@ -531,7 +496,7 @@ const styles = StyleSheet.create({
   },
   startChallengeButton: {
     backgroundColor: '#FF914D',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
     marginTop: 10,

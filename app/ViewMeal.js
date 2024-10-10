@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView } from 'react-native';
-import { useRoute } from '@react-navigation/native'; // Import useRoute from @react-navigation/native
+import { useRoute } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 const ViewMeal = () => {
   const router = useRouter();
-  const route = useRoute(); // Use useRoute to get the passed parameters
-  const { mealPlan } = route.params; // Get the mealPlan from route.params
+  const route = useRoute();
+  const { mealPlan } = route.params;
 
-  const mealPlanDetails = JSON.parse(mealPlan); // Convert the string back to an object
+  const mealPlanDetails = JSON.parse(mealPlan);
 
   return (
     <ScrollView style={styles.container}>
@@ -16,12 +16,14 @@ const ViewMeal = () => {
       <TouchableOpacity style={styles.backButton} onPress={() => router.push('SelectAPlan')}>
         <Text style={styles.backButtonText}>← Back</Text>
       </TouchableOpacity>
+
+      {/* Plan Title */}
       <Text style={styles.mealTitle}>{mealPlanDetails.planName}</Text>
+
       {/* Plan Image */}
       <Image source={require('../assets/images/pexels-chanwalrus-958545.jpg')} style={styles.mealImage} />
 
-      {/* Plan Title and Description */}
-
+      {/* Plan Description */}
       <Text style={styles.mealDescription}>{mealPlanDetails.description}</Text>
 
       {/* Total Calories */}
@@ -39,7 +41,7 @@ const ViewMeal = () => {
           </View>
         )}
         ListHeaderComponent={<Text style={styles.mealsHeader}>Meals</Text>}
-        scrollEnabled={false} // Disable scrolling on FlatList to make it fit inside ScrollView
+        scrollEnabled={false}
       />
     </ScrollView>
   );
@@ -49,61 +51,63 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F8F9FA', // Light background for a clean look
-  },
-  mealImage: {
-    width: '100%',
-    height: 250, // Increased the height for a more immersive image
-    borderRadius: 15,
-    marginBottom: 20,
+    backgroundColor: '#F0F3F5', // Light grey background for a modern look
+    paddingTop:60
   },
   backButton: {
     backgroundColor: '#6A1B9A',
-    padding: 14,
-    borderRadius: 30,
-    marginTop:20,
-    marginBottom: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 50,
     alignSelf: 'flex-start',
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    elevation: 4,
+    elevation: 5,
   },
   backButtonText: {
     color: '#FFFFFF',
-    fontSize: 20, // Increased font size for better visibility
+    fontSize: 18,
     fontWeight: '600',
   },
   mealTitle: {
-    fontSize: 32, // Increased font size for a more impressive title
+    fontSize: 30, // Reduced font size for better visual hierarchy
     fontWeight: 'bold',
     color: '#2C3E50',
     textAlign: 'center',
     marginBottom: 10,
+    letterSpacing: 0.5,
+  },
+  mealImage: {
+    width: '100%',
+    height: 250,
+    borderRadius: 15,
+    marginBottom: 20,
   },
   mealDescription: {
-    fontSize: 18, // Increased font size for better readability
+    fontSize: 17,
     color: '#7F8C8D',
     textAlign: 'center',
     marginBottom: 25,
-    lineHeight: 26, // Added line height for smoother text readability
+    lineHeight: 26,
+    paddingHorizontal: 10,
   },
   mealCalories: {
-    fontSize: 20, // Increased font size for calories info
+    fontSize: 20,
     color: '#34495E',
     textAlign: 'center',
     marginBottom: 30,
     fontWeight: '500',
   },
   caloriesNumber: {
-    fontSize: 22, // Emphasized the calorie count
+    fontSize: 22,
     fontWeight: '700',
     color: '#E74C3C',
   },
   mealsHeader: {
-    padding:14,
-    fontSize: 26, // Larger header for "Meals" section
+    fontSize: 24,
     fontWeight: '700',
     color: '#6A1B9A',
     marginBottom: 15,
@@ -112,18 +116,19 @@ const styles = StyleSheet.create({
   mealItem: {
     backgroundColor: '#FFFFFF',
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 12, // Added more spacing between meals
+    borderRadius: 12,
+    marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 3,
     elevation: 3,
   },
   mealItemText: {
-    fontSize: 20, // Larger font size for meal items
+    fontSize: 18,
     color: '#34495E',
     fontWeight: '500',
+    textAlign: 'left',
   },
 });
 

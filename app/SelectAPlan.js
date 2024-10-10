@@ -69,7 +69,7 @@ const SelectPlanScreen = () => {
     <View style={styles.mealCard}>
       
       <TouchableOpacity onPress={() => handleViewMeal(item)}>
-        <Image source={require('../assets/images/pexels-chanwalrus-958545.jpg')} style={[styles.mealImage, { width: screenWidth / 2 - 30 }]} />
+        <Image source={require('../assets/images/12.jpg')} style={[styles.mealImage, { width: screenWidth / 2 - 30 }]} />
       </TouchableOpacity>
       <Text style={styles.mealTitle}>{item.planName}</Text>
       <Text style={styles.mealDuration}>{item.totalCalories} calories</Text>
