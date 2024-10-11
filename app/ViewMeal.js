@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView } from 'react-native';
-import { useRoute } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
+import { useRouter, useGlobalSearchParams } from 'expo-router';
 
 const ViewMeal = () => {
   const router = useRouter();
-  const route = useRoute();
-  const { mealPlan } = route.params;
+  const glob = useGlobalSearchParams()
+  const { mealPlan } = glob;
 
   const mealPlanDetails = JSON.parse(mealPlan);
 

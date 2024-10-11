@@ -4,16 +4,17 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const meditationSessionsData = [
-  { id: '1', title: 'Mindful Breathing', duration: '1', level: 'Beginner', category: 'Focus', image: require('../../assets/images/D1.jpeg'), type: 'timer', description: 'A focused breathing session aimed at enhancing concentration and relaxation.', challenge: { goal: 5, reward: 'Relaxation Badge', completed: false } },
-  { id: '2', title: 'Gratitude Meditation', duration: '10', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/D2.png'), type: 'guided', description: 'Gratitude meditation helps in cultivating a sense of appreciation and positive energy.', challenge: { goal: 3, reward: 'Gratitude Badge', completed: false } },
-  { id: '3', title: 'Calmness', duration: '10', level: 'Expert', category: 'Success', image: require('../../assets/images/D3.png'), type: 'timer', description: 'Calmness meditation designed to help experts practice deeper states of relaxation and focus.', challenge: { goal: 7, reward: 'Calmness Badge', completed: false } },
+  { id: '1', title: 'Mindful Breathing', duration: '1', level: 'Beginner', category: 'Focus', image: require('../../assets/images/D1.jpeg'), type: 'timer', description: 'A focused breathing session aimed at enhancing concentration and relaxation.', challenge: { goal: 5, reward: 'Relaxation Badge', completed: false, active: false } },
+  { id: '2', title: 'Gratitude Meditation', duration: '10', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/D2.png'), type: 'guided', description: 'Gratitude meditation helps in cultivating a sense of appreciation and positive energy.', challenge: { goal: 3, reward: 'Gratitude Badge', completed: false, active: false } },
+  { id: '3', title: 'Calmness', duration: '10', level: 'Expert', category: 'Success', image: require('../../assets/images/D3.png'), type: 'timer', description: 'Calmness meditation designed to help experts practice deeper states of relaxation and focus.', challenge: { goal: 7, reward: 'Calmness Badge', completed: false, active: false } },
 ];
 
 export default function MeditationSessions() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('all'); // 'all', 'timer', 'guided'
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState([]);
+  const [challenges, setChallenges] = useState(meditationSessionsData);
 
   // Load favorites from AsyncStorage
   const loadFavorites = async () => {
@@ -27,28 +28,61 @@ export default function MeditationSessions() {
     }
   };
 
-  // Load favorites when the component mounts and when the screen comes into focus
   useEffect(() => {
     loadFavorites();
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
-      loadFavorites(); // Reload favorites when the page is focused
+      loadFavorites();
     }, [])
   );
 
-  // Save the updated favorites to AsyncStorage
-  const saveFavorites = async (updatedFavorites) => {
+  const saveChallenges = async (updatedChallenges) => {
     try {
-      await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      await AsyncStorage.setItem('challenges', JSON.stringify(updatedChallenges));
     } catch (error) {
-      console.error('Failed to save favorites:', error);
+      console.error('Failed to save challenges:', error);
     }
   };
 
-  // Handle adding or removing favorites
-  const toggleFavorite = (sessionId) => {
+  // Handle starting a challenge
+  const startChallenge = (sessionId) => {
+    const updatedChallenges = challenges.map((session) => {
+      if (session.id === sessionId) {
+        session.challenge.active = true;
+      }
+      return session;
+    });
+    setChallenges(updatedChallenges);
+    saveChallenges(updatedChallenges); // Persist changes
+  };
+
+  // Handle navigation and tracking progress
+  const handleMeditationPress = (session) => {
+    if (session.type === 'timer') {
+      router.push({
+        pathname: '/TimerSession',
+        params: { sessionId: session.id, duration: session.duration },
+      });
+    } else if (session.type === 'guided') {
+
+      console.log("hello",session.description)
+      router.push({
+        pathname: '/GuidedMeditationSession',
+        params: { sessionId: session.id, instructions: session.description },
+      });
+    }
+  };
+
+  // Filter sessions
+  const filteredSessions = challenges.filter((session) => {
+    const matchesCategory = selectedCategory === 'all' || session.type === selectedCategory;
+    const matchesSearch = session.title.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+    const toggleFavorite = (sessionId) => {
     const updatedFavorites = favorites.includes(sessionId)
       ? favorites.filter((id) => id !== sessionId) // Remove from favorites
       : [...favorites, sessionId]; // Add to favorites
@@ -57,27 +91,14 @@ export default function MeditationSessions() {
     saveFavorites(updatedFavorites); // Persist the changes
   };
 
-  // Handle navigation to the correct screen based on session type
-  const handleMeditationPress = (session) => {
-    if (session.type === 'timer') {
-      router.push({
-        pathname: '/TimerSession', // Ensure correct pathname
-        params: { sessionId: session.id, duration: session.duration }, // Pass params in the correct format
-      });
-    } else if (session.type === 'guided') {
-      router.push({
-        pathname: '/GuidedMeditationSession', // Ensure correct pathname
-        params: { sessionId: session.id, instructions: session.description }, // Assuming 'instructions' field is session.description
-      });
-    }
-  };
-
-  // Filter sessions based on category and search query
-  const filteredSessions = meditationSessionsData.filter((session) => {
-    const matchesCategory = selectedCategory === 'all' || session.type === selectedCategory;
-    const matchesSearch = session.title.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+    // Save the updated favorites to AsyncStorage
+    const saveFavorites = async (updatedFavorites) => {
+      try {
+        await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      } catch (error) {
+        console.error('Failed to save favorites:', error);
+      }
+    };
 
   return (
     <View style={styles.container}>
@@ -103,11 +124,20 @@ export default function MeditationSessions() {
         >
           <Text style={styles.categoryButtonText}>Guided</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+
+        
+  <TouchableOpacity
           style={[styles.categoryButton]}
           onPress={() => router.push('/FavoritesPage')} // Navigate to favorites page
         >
           <Text style={styles.categoryButtonText}>Favorites</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[styles.categoryButton]}
+          onPress={() => router.push('/ChallengesPage')} // Navigate to challenges page
+        >
+          <Text style={styles.categoryButtonText}>Challenges</Text>
         </TouchableOpacity>
       </View>
 
@@ -129,6 +159,7 @@ export default function MeditationSessions() {
             session={item}
             onPress={() => handleMeditationPress(item)}
             onFavoritePress={() => toggleFavorite(item.id)}
+            onChallengePress={() => startChallenge(item.id)}
             isFavorite={favorites.includes(item.id)}
           />
         )}
@@ -138,7 +169,7 @@ export default function MeditationSessions() {
   );
 }
 
-const MeditationCard = ({ session, onPress, onFavoritePress, isFavorite }) => {
+const MeditationCard = ({ session, onPress, onFavoritePress, onChallengePress, isFavorite }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
       <Image source={session.image} style={styles.imageStyle} />
@@ -153,11 +184,17 @@ const MeditationCard = ({ session, onPress, onFavoritePress, isFavorite }) => {
         <TouchableOpacity onPress={onFavoritePress} style={styles.favoriteButton}>
           <Text style={styles.favoriteButtonText}>{isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}</Text>
         </TouchableOpacity>
+
+        {/* Start Challenge Button */}
+        {!session.challenge.completed && !session.challenge.active && (
+          <TouchableOpacity onPress={onChallengePress} style={styles.startButton}>
+            <Text style={styles.startButtonText}>Start Challenge</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -247,6 +284,18 @@ const styles = StyleSheet.create({
   favoriteButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  startButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#4CAF50',
+    borderRadius: 5,
+  },
+  startButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
     textAlign: 'center',
   },
 });

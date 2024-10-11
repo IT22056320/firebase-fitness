@@ -1,121 +1,151 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ChallengesPage() {
-  const [activeChallenges, setActiveChallenges] = useState([]);
+  const [challenges, setChallenges] = useState([]);
   const router = useRouter();
 
-  useEffect(() => {
-    loadActiveChallenges();
-  }, []);
-
-  const loadActiveChallenges = async () => {
+  // Load challenges from AsyncStorage
+  const loadChallenges = async () => {
     try {
-      const savedChallenges = await AsyncStorage.getItem('activeChallenges');
-      if (savedChallenges) {
-        setActiveChallenges(JSON.parse(savedChallenges));
+      const storedChallenges = await AsyncStorage.getItem('challenges');
+      console.log(JSON.parse(storedChallenges));
+      if (storedChallenges) {
+        setChallenges(JSON.parse(storedChallenges));
       }
     } catch (error) {
-      console.error('Error loading active challenges:', error);
+      console.error('Failed to load challenges:', error);
     }
   };
 
-  const navigateToSession = (session) => {
-    if (session.type === 'timer') {
-      router.push({
-        pathname: '/TimerMeditationSession',
-        params: { session: JSON.stringify(session) },
-      });
-    } else {
-      router.push({
-        pathname: '/GuidedMeditationSession',
-        params: { session: JSON.stringify(session) },
-      });
+  useEffect(() => {
+    loadChallenges();
+  }, []);
+
+  // Save challenges to AsyncStorage
+  const saveChallenges = async (updatedChallenges) => {
+    try {
+      await AsyncStorage.setItem('challenges', JSON.stringify(updatedChallenges));
+    } catch (error) {
+      console.error('Failed to save challenges:', error);
     }
   };
+
+  // Handle restarting a challenge
+  const restartChallenge = (sessionId) => {
+    const updatedChallenges = challenges.map((challenge) => {
+      if (challenge.id === sessionId) {
+        challenge.challenge.active = true;
+        challenge.challenge.completed = false;
+      }
+      return challenge;
+    });
+    setChallenges(updatedChallenges);
+    saveChallenges(updatedChallenges); // Persist changes
+    alert('Challenge restarted!'); // Notify user
+  };
+
+  // Filter challenges into active and completed lists
+  const activeChallenges = challenges.filter((session) => session.challenge.active && !session.challenge.completed);
+  const completedChallenges = challenges.filter((session) => session.challenge.completed);
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.headerText}>Active Challenges</Text>
-      {activeChallenges.length > 0 ? (
-        activeChallenges.map((challenge) => (
-          <View key={challenge.id} style={styles.challengeContainer}>
-            <TouchableOpacity onPress={() => navigateToSession(challenge)}>
-              <Image source={challenge.image} style={styles.challengeImage} />
-              <View style={styles.challengeInfo}>
-                <Text style={styles.challengeTitle}>{challenge.title}</Text>
-                <Text style={styles.challengeGoal}>Goal: Complete {challenge.challenge.goal} times</Text>
-                <Text style={styles.challengeReward}>Reward: {challenge.challenge.reward}</Text>
-                <Text style={styles.challengeStatus}>
-                  {challenge.challenge.completed ? 'Completed 🏆' : 'In Progress 🚀'}
-                </Text>
-              </View>
+    <View style={styles.container}>
+      <Text style={styles.headerText}>Challenges</Text>
+
+      {/* Active Challenges */}
+      <Text style={styles.sectionHeaderText}>Active Challenges</Text>
+      <FlatList
+        data={activeChallenges}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.challengeCard}>
+            <Text style={styles.challengeTitle}>{item.title}</Text>
+            <Text style={styles.challengeGoal}>Goal: Complete {item.challenge.goal} sessions</Text>
+            <Text style={styles.challengeReward}>Reward: {item.challenge.reward}</Text>
+            <Text style={styles.statusText}>Status: In Progress</Text>
+          </View>
+        )}
+        ListEmptyComponent={<Text>No active challenges.</Text>}
+      />
+
+      {/* Completed Challenges */}
+      <Text style={styles.sectionHeaderText}>Completed Challenges</Text>
+      <FlatList
+        data={completedChallenges}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.challengeCard}>
+            <Text style={styles.challengeTitle}>{item.title}</Text>
+            <Text style={styles.challengeGoal}>Goal: Complete {item.challenge.goal} sessions</Text>
+            <Text style={styles.challengeReward}>Reward: {item.challenge.reward}</Text>
+            <Text style={styles.statusText}>Status: Completed</Text>
+            <TouchableOpacity
+              style={styles.restartButton}
+              onPress={() => restartChallenge(item.id)}
+            >
+              <Text style={styles.restartButtonText}>Restart Challenge</Text>
             </TouchableOpacity>
           </View>
-        ))
-      ) : (
-        <Text style={styles.noChallengesText}>No active challenges available.</Text>
-      )}
-    </ScrollView>
+        )}
+        ListEmptyComponent={<Text>No completed challenges.</Text>}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#F0E6FE',
+    marginHorizontal: 20,
+    marginTop: 20,
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '600',
     marginBottom: 20,
-    color: '#4B4B4B',
   },
-  challengeContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 15,
+  sectionHeaderText: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  challengeCard: {
+    backgroundColor: '#F5F5F5',
     padding: 15,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  challengeImage: {
-    width: 100,
-    height: 100,
     borderRadius: 10,
-    marginRight: 15,
-  },
-  challengeInfo: {
-    flex: 1,
-    justifyContent: 'center',
+    marginBottom: 15,
   },
   challengeTitle: {
     fontSize: 18,
     fontWeight: 'bold',
   },
   challengeGoal: {
-    fontSize: 14,
-    color: 'blue',
+    fontSize: 16,
+    color: '#6B7280',
+    marginVertical: 5,
   },
   challengeReward: {
     fontSize: 14,
-    color: 'green',
+    color: '#10B981',
   },
-  challengeStatus: {
+  statusText: {
     fontSize: 14,
-    color: '#555',
+    color: '#FFA500',
+    marginTop: 10,
   },
-  noChallengesText: {
+  restartButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#4CAF50',
+    borderRadius: 5,
+  },
+  restartButtonText: {
     fontSize: 16,
-    color: '#888',
+    fontWeight: 'bold',
+    color: 'white',
     textAlign: 'center',
-    marginTop: 20,
   },
 });
