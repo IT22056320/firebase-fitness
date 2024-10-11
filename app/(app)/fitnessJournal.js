@@ -71,6 +71,16 @@ export default function FitnessJournal() {
     };
 
     const handleAddEntry = async () => {
+        // Validation logic
+        if (!entry.trim()) {
+            Alert.alert('Validation Error', 'Please enter a description of your workout.');
+            return;
+        }
+        if (!emojiRating) {
+            Alert.alert('Validation Error', 'Please select how you felt after your workout.');
+            return;
+        }
+
         const newEntry = {
             id: editingId || moment().valueOf().toString(), // Unique ID or use the existing one for editing
             text: entry,
