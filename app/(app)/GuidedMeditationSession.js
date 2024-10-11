@@ -1,91 +1,51 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet, ScrollView, Button, Alert } from 'react-native';
 
-export default function GuidedMeditationSession() {
-  const params = useLocalSearchParams();
-  const session = params.session ? JSON.parse(params.session) : null;
+export default function GuidedMeditationSession({ route, navigation }) {
+  // Get the instructions from route params
+  const instructions = route?.params?.instructions || 'No instructions provided';
 
-  const updateChallengeProgress = async (session) => {
-    try {
-      const challenges = await AsyncStorage.getItem('completedChallenges');
-      let parsedChallenges = challenges ? JSON.parse(challenges) : [];
-      
-      const challengeIndex = parsedChallenges.findIndex(challenge => challenge.id === session.id);
-
-      if (challengeIndex >= 0) {
-        parsedChallenges[challengeIndex].progress += 1;
-      } else {
-        parsedChallenges.push({ id: session.id, progress: 1, goal: session.challenge.goal, reward: session.challenge.reward });
-      }
-
-      const updatedChallenges = parsedChallenges.map(challenge => {
-        if (challenge.progress >= challenge.goal) {
-          challenge.completed = true;
-        }
-        return challenge;
-      });
-
-      await AsyncStorage.setItem('completedChallenges', JSON.stringify(updatedChallenges));
-
-      alert(`You've completed the ${session.title} session!`);
-    } catch (error) {
-      console.error('Error updating challenge progress:', error);
-    }
+  // Function to handle session completion
+  const handleSessionComplete = () => {
+    Alert.alert('Session Complete', 'Congratulations on completing the guided meditation!');
+    navigation.goBack('MeditationHome'); // Navigate back after completion
   };
-
-  const handleSessionCompletion = () => {
-    updateChallengeProgress(session);
-    alert(`You've completed the ${session.title} session!`);
-  };
-  
-
-  if (!session) {
-    return (
-      <View style={styles.container}>
-        <Text>Session not found.</Text>
-      </View>
-    );
-  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <Text style={styles.title}>{session.title}</Text>
-        <Image source={session.image} style={styles.image} />
-        <Text style={styles.description}>{session.description}</Text>
-        <Text style={styles.instructionsTitle}>Instructions</Text>
-        <Text style={styles.instructions}>{session.instructions}</Text>
-      </ScrollView>
-
-      <TouchableOpacity onPress={handleSessionCompletion} style={styles.completeButton}>
-        <Text style={styles.completeButtonText}>Complete Session</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    <ScrollView style={styles.container}>
+      <Text style={styles.headerText}>Guided Meditation</Text>
+      
+      {/* Instructions Text */}
+      <Text style={styles.instructionsText}>{instructions}</Text>
+      
+      {/* "Complete" Button */}
+      <View style={styles.buttonContainer}>
+        <Button title="I Completed It" onPress={handleSessionComplete} />
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: 'white' },
-  title: { fontSize: hp(4), fontWeight: 'bold', marginBottom: 10 },
-  image: { width: '100%', height: hp(25), marginBottom: 20 },
-  description: { fontSize: hp(2.2), color: '#333', textAlign: 'justify', marginBottom: 20 },
-  instructionsTitle: { fontSize: hp(3), fontWeight: 'bold', marginBottom: 10 },
-  instructions: { fontSize: hp(2.2), color: '#555', textAlign: 'justify' },
-  completeButton: {
-    backgroundColor: '#6E44FF',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignSelf: 'center',
-    marginTop: 20,
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#F5F5F5',
   },
-  completeButtonText: {
-    fontSize: 18,
-    color: '#FFF',
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
     textAlign: 'center',
+  },
+  instructionsText: {
+    fontSize: 18,
+    lineHeight: 28,
+    color: '#4B5563',
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    alignItems: 'center',
   },
 });

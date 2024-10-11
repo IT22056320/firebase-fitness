@@ -66,6 +66,15 @@ export default function _layout() {
         }}
       />
 
+      <Stack.Screen
+        name="TimerSession"
+        options={{ title: 'Timer Session' }}
+      />
+      <Stack.Screen
+        name="GuidedMeditationSession"
+        options={{ title: 'Guided Session' }}
+      />
+
 <Stack.Screen
         name="MeditationHome"
         options={{ title: 'Meditation' }}
@@ -75,10 +84,11 @@ export default function _layout() {
         name="MeditationDetails"
         options={{ title: 'Session Details' }}
       />
-      <Stack.Screen
-        name="TimerSession"
-        options={{ title: 'Timer Session' }}
-      />
+    
+    <Stack.Screen
+  name="FavoritesPage"
+  options={{ title: 'Favorites' }}
+/>
 
 
 {/* Saved Sessions Screen */}
