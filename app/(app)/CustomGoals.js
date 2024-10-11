@@ -87,15 +87,13 @@ export default function CustomGoals() {
   const handleBack = () => {
     router.back();
   };
- 
 
   return (
-    <ScrollView style={styles.container}>
-        <View style={styles.header}>
-                <Feather name="chevron-left" size={hp(3)} color="purple" onPress={handleBack} />
-                <Text style={styles.header}>Custom Wellness Goals</Text>
-            </View>
-      
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.headerContainer}>
+        <Feather name="chevron-left" size={hp(3)} color="purple" onPress={handleBack} />
+        <Text style={styles.header}>Custom Wellness Goals</Text>
+      </View>
 
       <TextInput
         style={styles.input}
@@ -151,23 +149,28 @@ export default function CustomGoals() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollContainer: {
+    flexGrow: 1,
     padding: 20,
     backgroundColor: '#F0E6FE',
-    paddingTop:60
+    paddingTop: 60,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   header: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#6E44FF',
-    marginBottom: 20,
+    marginLeft: 10,
   },
   input: {
     borderColor: '#b0c4de',
     borderWidth: 1,
     padding: 12,
-    marginBottom: 10,
+    marginBottom: 15,
     borderRadius: 10,
     backgroundColor: '#fff',
     fontSize: 16,
@@ -179,15 +182,15 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#6E44FF',
-    padding: 10,
-    borderRadius: 10,
+    padding: 12,
+    borderRadius: 12,
     flex: 1,
     marginHorizontal: 5,
   },
   selectedCategory: {
     backgroundColor: '#4b2cb3',
-    padding: 10,
-    borderRadius: 10,
+    padding: 12,
+    borderRadius: 12,
     flex: 1,
     marginHorizontal: 5,
   },
@@ -199,8 +202,8 @@ const styles = StyleSheet.create({
   submitButton: {
     backgroundColor: '#6E44FF',
     padding: 15,
-    borderRadius: 10,
-    marginVertical: 20,
+    borderRadius: 12,
+    marginBottom: 30,
   },
   submitButtonText: {
     color: '#fff',
@@ -209,21 +212,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   goalsContainer: {
-    marginTop: 20,
+    marginTop: 10,
   },
   goalItem: {
     padding: 15,
     marginVertical: 10,
-    backgroundColor: '#e6f0fa',
-    borderRadius: 10,
+    backgroundColor: '#fff',
+    borderRadius: 12,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
+    elevation: 2,
   },
   goalText: {
-    fontSize: 16,
-    color: '#2f4f4f',
+    fontSize: 18,
+    color: '#333',
+    fontWeight: '600',
   },
   categoryText: {
     fontSize: 14,
@@ -231,7 +236,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   recommendation: {
-    fontSize: 12,
+    fontSize: 13,
     fontStyle: 'italic',
     color: '#7f8c8d',
     marginBottom: 10,
@@ -243,7 +248,7 @@ const styles = StyleSheet.create({
   actionButton: {
     backgroundColor: '#6E44FF',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     flex: 1,
     marginHorizontal: 5,
   },

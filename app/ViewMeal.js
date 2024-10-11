@@ -4,7 +4,7 @@ import { useRouter, useGlobalSearchParams } from 'expo-router';
 
 const ViewMeal = () => {
   const router = useRouter();
-  const glob = useGlobalSearchParams()
+  const glob = useGlobalSearchParams();
   const { mealPlan } = glob;
 
   const mealPlanDetails = JSON.parse(mealPlan);
@@ -23,7 +23,9 @@ const ViewMeal = () => {
       <Image source={require('../assets/images/pexels-chanwalrus-958545.jpg')} style={styles.mealImage} />
 
       {/* Plan Description */}
-      <Text style={styles.mealDescription}>{mealPlanDetails.description}</Text>
+      <View style={styles.descriptionContainer}>
+        <Text style={styles.mealDescription}>{mealPlanDetails.description}</Text>
+      </View>
 
       {/* Total Calories */}
       <Text style={styles.mealCalories}>
@@ -50,12 +52,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F0E6FE', // Light grey background for a modern look
-    paddingTop:60
+    backgroundColor: '#F0E6FE',
+    paddingTop: 60,
   },
   backButton: {
-    backgroundColor: '#6A1B9A',
-    paddingVertical: 12,
+    backgroundColor: '#6E44FF',
+    paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 50,
     alignSelf: 'flex-start',
@@ -72,26 +74,39 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   mealTitle: {
-    fontSize: 30, // Reduced font size for better visual hierarchy
+    fontSize: 32, // Larger font size for a bold title
     fontWeight: 'bold',
     color: '#2C3E50',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
     letterSpacing: 0.5,
   },
   mealImage: {
     width: '100%',
     height: 250,
-    borderRadius: 15,
+    borderRadius: 20, // More rounded corners
     marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#6E44FF', // Accent border
+  },
+  descriptionContainer: {
+    backgroundColor: '#fff', // White background for description box
+    padding: 15,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
   mealDescription: {
-    fontSize: 17,
-    color: '#7F8C8D',
+    fontSize: 18,
+    color: '#34495E',
     textAlign: 'center',
-    marginBottom: 25,
     lineHeight: 26,
-    paddingHorizontal: 10,
   },
   mealCalories: {
     fontSize: 20,
@@ -101,16 +116,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   caloriesNumber: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
     color: '#E74C3C',
   },
   mealsHeader: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '700',
-    color: '#6A1B9A',
+    color: '#6E44FF',
     marginBottom: 15,
     textAlign: 'center',
+    textDecorationLine: 'underline', // Add underline for emphasis
   },
   mealItem: {
     backgroundColor: '#FFFFFF',

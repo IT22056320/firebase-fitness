@@ -31,32 +31,63 @@ const AddToPlanScreen = () => {
   const mainFood = [
     { label: 'Rice (100g cooked)', value: { id: '1', name: 'Rice', calories: 130 } },
     { label: 'Quinoa (100g cooked)', value: { id: '2', name: 'Quinoa', calories: 120 } },
-    { label: 'Whole Wheat Bread (1 slice)', value: { id: '3', name: 'Whole Wheat Bread', calories: 100 } },
-    // Add the rest of the items...
+    { label: 'Whole Wheat Bread (40g slice)', value: { id: '3', name: 'Whole Wheat Bread', calories: 100 } },
+    { label: 'Pasta (100g cooked)', value: { id: '4', name: 'Pasta', calories: 131 } },
+    { label: 'Brown Rice (100g cooked)', value: { id: '5', name: 'Brown Rice', calories: 112 } },
+    { label: 'Sweet Potatoes (100g)', value: { id: '6', name: 'Sweet Potatoes', calories: 86 } },
+    { label: 'Mashed Potatoes (100g)', value: { id: '7', name: 'Mashed Potatoes', calories: 90 } },
+    { label: 'Couscous (100g cooked)', value: { id: '8', name: 'Couscous', calories: 112 } },
+    { label: 'Barley (100g cooked)', value: { id: '9', name: 'Barley', calories: 123 } },
   ];
 
   const curries = [
     { id: '10', name: 'Grilled Chicken Breast (150g)', calories: 248 },
     { id: '11', name: 'Fish Curry (150g)', calories: 200 },
-    // Add the rest of the items...
+    { id: '12', name: 'Lentil Curry (100g)', calories: 116 },
+    { id: '13', name: 'Tofu Curry (100g)', calories: 76 },
+    { id: '14', name: 'Egg Curry (1 boiled egg, 50g)', calories: 78 },
+    { id: '15', name: 'Chickpea Curry (100g)', calories: 164 },
+    { id: '16', name: 'Beef Curry (150g)', calories: 260 },
+    { id: '17', name: 'Paneer Curry (100g)', calories: 265 },
+    { id: '18', name: 'Mutton Curry (150g)', calories: 294 },
+    { id: '19', name: 'Turkey Breast (150g grilled)', calories: 189 },
+    { id: '20', name: 'Pork Chop (150g grilled)', calories: 320 },
   ];
 
   const vegetableSides = [
     { id: '21', name: 'Steamed Broccoli (100g)', calories: 35 },
     { id: '22', name: 'Carrot Sticks (100g)', calories: 41 },
-    // Add the rest of the items...
+    { id: '23', name: 'Steamed Spinach (100g)', calories: 23 },
+    { id: '24', name: 'Grilled Zucchini (100g)', calories: 17 },
+    { id: '25', name: 'Baked Eggplant (100g)', calories: 25 },
+    { id: '26', name: 'Roasted Cauliflower (100g)', calories: 70 },
+    { id: '27', name: 'Green Beans (100g)', calories: 31 },
+    { id: '28', name: 'Steamed Asparagus (100g)', calories: 22 },
+    { id: '29', name: 'Baked Bell Peppers (100g)', calories: 40 },
   ];
 
   const salads = [
     { id: '30', name: 'Mixed Salad (150g)', calories: 30 },
     { id: '31', name: 'Avocado (75g)', calories: 120 },
-    // Add the rest of the items...
+    { id: '32', name: 'Greek Salad (100g)', calories: 101 },
+    { id: '33', name: 'Cabbage Salad (100g)', calories: 25 },
+    { id: '34', name: 'Kale Salad (100g)', calories: 49 },
+    { id: '35', name: 'Caesar Salad (100g)', calories: 190 },
+    { id: '36', name: 'Caprese Salad (100g)', calories: 125 },
+    { id: '37', name: 'Chickpea Salad (100g)', calories: 164 },
   ];
 
   const desserts = [
     { label: 'Dark Chocolate (30g)', value: { id: '38', name: 'Dark Chocolate', calories: 170 } },
     { label: 'Mixed Berries (100g)', value: { id: '39', name: 'Mixed Berries', calories: 57 } },
-    // Add the rest of the items...
+    { label: 'Apple Pie (100g slice)', value: { id: '40', name: 'Apple Pie', calories: 237 } },
+    { label: 'Vanilla Ice Cream (100g)', value: { id: '41', name: 'Vanilla Ice Cream', calories: 207 } },
+    { label: 'Cheesecake (100g)', value: { id: '42', name: 'Cheesecake', calories: 321 } },
+    { label: 'Chocolate Chip Cookie (20g)', value: { id: '43', name: 'Chocolate Chip Cookie', calories: 98 } },
+    { label: 'Mango Sorbet (100g)', value: { id: '44', name: 'Mango Sorbet', calories: 130 } },
+    { label: 'Fruit Salad (100g)', value: { id: '45', name: 'Fruit Salad', calories: 50 } },
+    { label: 'Carrot Cake (100g)', value: { id: '46', name: 'Carrot Cake', calories: 420 } },
+    { label: 'Custard (100g)', value: { id: '47', name: 'Custard', calories: 122 } },
   ];
 
   // Calculate total calories dynamically

@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function FavoritesPage({ navigation }) {
+export default function FavoritesPage() {
   const [favorites, setFavorites] = useState([]);
   const [favoriteSessions, setFavoriteSessions] = useState([]);
 
   const meditationSessionsData = [
-    { id: '1', title: 'Mindful Breathing', duration: '1', level: 'Beginner', category: 'Focus', image: require('../../assets/images/D1.jpeg'), type: 'timer', description: 'A focused breathing session aimed at enhancing concentration and relaxation.', challenge: { goal: 5, reward: 'Relaxation Badge', completed: false } },
-    { id: '2', title: 'Gratitude Meditation', duration: '10', level: 'Beginner', category: 'Positivity', image: require('../../assets/images/D2.png'), type: 'guided', description: 'Gratitude meditation helps in cultivating a sense of appreciation and positive energy.', challenge: { goal: 3, reward: 'Gratitude Badge', completed: false } },
-    { id: '3', title: 'Calmness', duration: '10', level: 'Expert', category: 'Success', image: require('../../assets/images/D3.png'), type: 'timer', description: 'Calmness meditation designed to help experts practice deeper states of relaxation and focus.', challenge: { goal: 7, reward: 'Calmness Badge', completed: false } },
+    {
+      id: '1',
+      title: 'Mindful Breathing',
+      duration: '5',
+      level: 'Beginner',
+      category: 'Focus',
+      image: require('../../assets/images/D1.jpeg'),
+      description: 'A focused breathing session aimed at enhancing concentration and relaxation.',
+    },
+    // ... (more sessions)
   ];
 
-  // Load favorites from AsyncStorage when the component mounts
   useEffect(() => {
     const loadFavorites = async () => {
       try {
@@ -27,13 +33,11 @@ export default function FavoritesPage({ navigation }) {
     loadFavorites();
   }, []);
 
-  // Update the favorite sessions based on the IDs stored in AsyncStorage
   useEffect(() => {
     const favoriteSessionsList = meditationSessionsData.filter((session) => favorites.includes(session.id));
     setFavoriteSessions(favoriteSessionsList);
   }, [favorites]);
 
-  // Handle removing a favorite and update AsyncStorage
   const handleRemoveFavorite = async (sessionId) => {
     const updatedFavorites = favorites.filter((id) => id !== sessionId);
     setFavorites(updatedFavorites);
@@ -57,7 +61,6 @@ export default function FavoritesPage({ navigation }) {
               <Text style={styles.durationText}>{item.duration} min</Text>
               <Text style={styles.descriptionText}>{item.description}</Text>
 
-              {/* Unfavorite Button */}
               <TouchableOpacity onPress={() => handleRemoveFavorite(item.id)} style={styles.favoriteButton}>
                 <Text style={styles.favoriteButtonText}>Remove from Favorites</Text>
               </TouchableOpacity>
@@ -73,57 +76,78 @@ export default function FavoritesPage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
-    marginTop: 20,
+    backgroundColor: '#F0E6FE',
   },
   headerText: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#333',
     marginBottom: 20,
+    paddingTop:20,
+    paddingLeft:10
   },
   cardContainer: {
     flexDirection: 'row',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
     marginBottom: 20,
-    overflow: 'hidden',
+    padding: 15,
+    elevation: 3, // Shadow for Android
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
   },
   imageStyle: {
     width: 120,
     height: 100,
     borderRadius: 10,
+    marginRight: 15,
   },
   cardContent: {
     flex: 1,
-    padding: 10,
+    justifyContent: 'center',
   },
   titleText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: '#6E44FF',
+    marginBottom: 5,
   },
   categoryText: {
     fontSize: 16,
     color: '#6B7280',
-    marginVertical: 5,
+    marginBottom: 5,
   },
   durationText: {
     fontSize: 14,
     color: '#9CA3AF',
+    marginBottom: 5,
   },
   descriptionText: {
     fontSize: 14,
-    color: '#4B5563',
-    marginTop: 10,
+    color: '#555',
+    marginBottom: 10,
   },
   favoriteButton: {
-    marginTop: 10,
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     backgroundColor: '#FF6347',
-    borderRadius: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FF7F50',
+    shadowColor: '#FF7F50',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
   },
   favoriteButtonText: {
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  flatListContent: {
+    paddingBottom: 20,
   },
 });

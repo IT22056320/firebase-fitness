@@ -12,6 +12,10 @@ export default function Exercises() {
   const { bodyPart } = useLocalSearchParams();
   const router = useRouter();
 
+  const handleBack = () => {
+    router.push('Home');
+};
+
   useEffect(() => {
     const loadExercises = async () => {
       try {
@@ -72,7 +76,7 @@ export default function Exercises() {
           )}
         />
 
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
           <LinearGradient colors={['#6E44FF', '#9B5FFF']} style={styles.backButtonGradient}>
             <Text style={styles.backButtonText}>Go Back</Text>
           </LinearGradient>

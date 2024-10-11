@@ -14,9 +14,7 @@ const Settings = () => {
     router.back();
   };
 
-  const handleAvatar = () => {
-    router.push('AvatarCreator');
-  };
+ 
 
   const handleProfile = () => {
     router.push('profile');
@@ -74,13 +72,7 @@ const Settings = () => {
           <Icon name="chevron-right" size={24} color="#6E44FF" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.settingsOption} onPress={handleAvatar}>
-          <View style={styles.iconContainer}>
-            <Icon name="person-outline" size={20} color="#6E44FF" />
-          </View>
-          <Text style={styles.optionText}>Avatar</Text>
-          <Icon name="chevron-right" size={24} color="#6E44FF" />
-        </TouchableOpacity>
+      
 
         <TouchableOpacity style={styles.settingsOption} onPress={handleCalculator}>
           <View style={styles.iconContainer}>

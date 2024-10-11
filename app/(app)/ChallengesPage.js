@@ -69,7 +69,7 @@ export default function ChallengesPage() {
             <Text style={styles.statusText}>Status: In Progress</Text>
           </View>
         )}
-        ListEmptyComponent={<Text>No active challenges.</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>No active challenges.</Text>}
       />
 
       {/* Completed Challenges */}
@@ -93,7 +93,7 @@ export default function ChallengesPage() {
             </TouchableOpacity>
           </View>
         )}
-        ListEmptyComponent={<Text>No completed challenges.</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>No completed challenges.</Text>}
       />
     </View>
   );
@@ -102,58 +102,89 @@ export default function ChallengesPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
-    marginTop: 20,
+    paddingLeft:8,
+    paddingRight:8,
+    backgroundColor: '#F0E6FE',
   },
   headerText: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 20,
+    textAlign: 'center',
   },
   sectionHeaderText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '600',
+    color: '#6E44FF',
     marginBottom: 10,
   },
   challengeCard: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 15,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5, // For Android shadow effect
   },
   challengeTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
   },
   challengeGoal: {
     fontSize: 16,
     color: '#6B7280',
-    marginVertical: 5,
+    marginBottom: 8,
   },
   challengeReward: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '600',
     color: '#10B981',
+    marginBottom: 5,
   },
   challengeProgress: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '500',
     color: '#FFA500',
-    marginTop: 10,
+    marginBottom: 5,
   },
   statusText: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '500',
     color: '#FFA500',
-    marginTop: 10,
+    marginBottom: 10,
   },
   restartButton: {
     marginTop: 10,
-    padding: 10,
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: '#6E44FF', // Purple background color
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Android shadow effect
   },
   restartButtonText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#FFFFFF',
     textAlign: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });

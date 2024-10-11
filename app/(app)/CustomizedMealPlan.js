@@ -8,7 +8,7 @@ const mealPlans = {
     {
       meal: 'High-Protein Breakfast',
       description: 'Oatmeal with peanut butter, eggs, and a protein shake.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-enginakyurt-2673353.jpg'),
     },
     {
       meal: 'Lunch',
@@ -18,19 +18,19 @@ const mealPlans = {
     {
       meal: 'Dinner',
       description: 'Salmon with sweet potatoes and a large mixed salad with olive oil.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-catscoming-674574.jpg'),
     },
     {
       meal: 'Snacks',
       description: 'Nuts, Greek yogurt with honey, and smoothies with almond milk.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-janetrangdoan-793759.jpg'),
     },
   ],
   Healthy: [
     {
       meal: 'Balanced Breakfast',
       description: 'Greek yogurt with fresh fruit and granola.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-catscoming-406152.jpg'),
     },
     {
       meal: 'Lunch',
@@ -40,19 +40,19 @@ const mealPlans = {
     {
       meal: 'Dinner',
       description: 'Grilled chicken or tofu stir-fry with brown rice and veggies.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-catscoming-674574.jpg'),
     },
     {
       meal: 'Snacks',
       description: 'Fruit, mixed nuts, and hummus with vegetable sticks.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-janetrangdoan-793759.jpg'),
     },
   ],
   Overweight: [
     {
       meal: 'Low-Carb Breakfast',
       description: 'Scrambled eggs with spinach and mushrooms, and black coffee.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-pixabay-357756.jpg'),
     },
     {
       meal: 'Lunch',
@@ -62,19 +62,19 @@ const mealPlans = {
     {
       meal: 'Dinner',
       description: 'Chicken salad with a variety of vegetables and olive oil dressing.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-catscoming-674574.jpg'),
     },
     {
       meal: 'Snacks',
       description: 'Carrot sticks, almonds, and a small apple.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-janetrangdoan-793759.jpg'),
     },
   ],
   Obese: [
     {
       meal: 'Low-Calorie Breakfast',
       description: 'Egg whites with spinach and whole grain toast.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-valeriya-1247677.jpg'),
     },
     {
       meal: 'Lunch',
@@ -84,12 +84,12 @@ const mealPlans = {
     {
       meal: 'Dinner',
       description: 'Steamed salmon with asparagus and a small portion of brown rice.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-catscoming-674574.jpg'),
     },
     {
       meal: 'Snacks',
       description: 'Cucumber slices, boiled eggs, and low-fat cheese.',
-      image: require('../../assets/images/pexels-chanwalrus-958545.jpg'),
+      image: require('../../assets/images/pexels-janetrangdoan-793759.jpg'),
     },
   ],
 };
