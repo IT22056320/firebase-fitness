@@ -16,25 +16,28 @@ export default function MeditationSessions() {
   const [favorites, setFavorites] = useState([]);
   const [challenges, setChallenges] = useState(meditationSessionsData);
 
-  // Load favorites from AsyncStorage
-  const loadFavorites = async () => {
+  // Load challenges from AsyncStorage
+  const loadChallenges = async () => {
     try {
-      const storedFavorites = await AsyncStorage.getItem('favorites');
-      if (storedFavorites) {
-        setFavorites(JSON.parse(storedFavorites));
+      const storedChallenges = await AsyncStorage.getItem('challenges');
+      if (storedChallenges) {
+        setChallenges(JSON.parse(storedChallenges));
+      } else {
+        setChallenges(meditationSessionsData); // Set default data if nothing is in AsyncStorage
       }
     } catch (error) {
-      console.error('Failed to load favorites:', error);
+      console.error('Failed to load challenges:', error);
     }
   };
 
   useEffect(() => {
-    loadFavorites();
+    loadChallenges();
   }, []);
 
+  // Reload challenges when page is focused
   useFocusEffect(
     React.useCallback(() => {
-      loadFavorites();
+      loadChallenges();
     }, [])
   );
 
@@ -51,11 +54,14 @@ export default function MeditationSessions() {
     const updatedChallenges = challenges.map((session) => {
       if (session.id === sessionId) {
         session.challenge.active = true;
+        session.challenge.completed = false;
+        session.challenge.sessionsCompleted = session.challenge.sessionsCompleted || 0; // Initialize if not set
       }
       return session;
     });
     setChallenges(updatedChallenges);
-    saveChallenges(updatedChallenges); // Persist changes
+    saveChallenges(updatedChallenges);
+    alert('Challenge started!');
   };
 
   // Handle navigation and tracking progress
@@ -63,14 +69,26 @@ export default function MeditationSessions() {
     if (session.type === 'timer') {
       router.push({
         pathname: '/TimerSession',
-        params: { sessionId: session.id, duration: session.duration },
+        params: {
+          sessionId: session.id,
+          duration: session.duration,
+          challengeId: session.id, // Pass challengeId
+          instructions: session.description, // Pass instructions
+          image: session.image, // Pass image
+          description: session.description // Pass description
+        },
       });
     } else if (session.type === 'guided') {
-
-      console.log("hello",session.description)
       router.push({
         pathname: '/GuidedMeditationSession',
-        params: { sessionId: session.id, instructions: session.description },
+        params: {
+          sessionId: session.id,
+          instructions: session.description,
+          image: session.image,
+          description: session.description,
+          reward: session.challenge.reward,
+          challengeId: session.id, // Pass challengeId
+        },
       });
     }
   };
@@ -82,7 +100,7 @@ export default function MeditationSessions() {
     return matchesCategory && matchesSearch;
   });
 
-    const toggleFavorite = (sessionId) => {
+  const toggleFavorite = (sessionId) => {
     const updatedFavorites = favorites.includes(sessionId)
       ? favorites.filter((id) => id !== sessionId) // Remove from favorites
       : [...favorites, sessionId]; // Add to favorites
@@ -91,19 +109,17 @@ export default function MeditationSessions() {
     saveFavorites(updatedFavorites); // Persist the changes
   };
 
-    // Save the updated favorites to AsyncStorage
-    const saveFavorites = async (updatedFavorites) => {
-      try {
-        await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-      } catch (error) {
-        console.error('Failed to save favorites:', error);
-      }
-    };
+  const saveFavorites = async (updatedFavorites) => {
+    try {
+      await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    } catch (error) {
+      console.error('Failed to save favorites:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Meditation Sessions</Text>
-
       {/* Category Selector */}
       <View style={styles.categoryContainer}>
         <TouchableOpacity
@@ -125,17 +141,16 @@ export default function MeditationSessions() {
           <Text style={styles.categoryButtonText}>Guided</Text>
         </TouchableOpacity>
 
-        
-  <TouchableOpacity
+        <TouchableOpacity
           style={[styles.categoryButton]}
-          onPress={() => router.push('/FavoritesPage')} // Navigate to favorites page
+          onPress={() => router.push('/FavoritesPage')}
         >
           <Text style={styles.categoryButtonText}>Favorites</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[styles.categoryButton]}
-          onPress={() => router.push('/ChallengesPage')} // Navigate to challenges page
+          onPress={() => router.push('/ChallengesPage')}
         >
           <Text style={styles.categoryButtonText}>Challenges</Text>
         </TouchableOpacity>

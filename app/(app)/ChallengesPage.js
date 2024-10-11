@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
 
 export default function ChallengesPage() {
   const [challenges, setChallenges] = useState([]);
-  const router = useRouter();
 
   // Load challenges from AsyncStorage
   const loadChallenges = async () => {
     try {
       const storedChallenges = await AsyncStorage.getItem('challenges');
-      console.log(JSON.parse(storedChallenges));
       if (storedChallenges) {
         setChallenges(JSON.parse(storedChallenges));
       }
@@ -33,21 +30,22 @@ export default function ChallengesPage() {
     }
   };
 
-  // Handle restarting a challenge
-  const restartChallenge = (sessionId) => {
+  // Restart challenge function
+  const restartChallenge = (challengeId) => {
     const updatedChallenges = challenges.map((challenge) => {
-      if (challenge.id === sessionId) {
+      if (challenge.id === challengeId) {
         challenge.challenge.active = true;
         challenge.challenge.completed = false;
+        challenge.challenge.sessionsCompleted = 0; // Reset progress
       }
       return challenge;
     });
+
     setChallenges(updatedChallenges);
-    saveChallenges(updatedChallenges); // Persist changes
+    saveChallenges(updatedChallenges);
     alert('Challenge restarted!'); // Notify user
   };
 
-  // Filter challenges into active and completed lists
   const activeChallenges = challenges.filter((session) => session.challenge.active && !session.challenge.completed);
   const completedChallenges = challenges.filter((session) => session.challenge.completed);
 
@@ -65,6 +63,9 @@ export default function ChallengesPage() {
             <Text style={styles.challengeTitle}>{item.title}</Text>
             <Text style={styles.challengeGoal}>Goal: Complete {item.challenge.goal} sessions</Text>
             <Text style={styles.challengeReward}>Reward: {item.challenge.reward}</Text>
+            <Text style={styles.challengeProgress}>
+              Progress: {item.challenge.sessionsCompleted || 0}/{item.challenge.goal}
+            </Text>
             <Text style={styles.statusText}>Status: In Progress</Text>
           </View>
         )}
@@ -82,9 +83,11 @@ export default function ChallengesPage() {
             <Text style={styles.challengeGoal}>Goal: Complete {item.challenge.goal} sessions</Text>
             <Text style={styles.challengeReward}>Reward: {item.challenge.reward}</Text>
             <Text style={styles.statusText}>Status: Completed</Text>
+
+            {/* Restart Button */}
             <TouchableOpacity
               style={styles.restartButton}
-              onPress={() => restartChallenge(item.id)}
+              onPress={() => restartChallenge(item.id)} // Restart challenge on button press
             >
               <Text style={styles.restartButtonText}>Restart Challenge</Text>
             </TouchableOpacity>
@@ -130,6 +133,11 @@ const styles = StyleSheet.create({
   challengeReward: {
     fontSize: 14,
     color: '#10B981',
+  },
+  challengeProgress: {
+    fontSize: 14,
+    color: '#FFA500',
+    marginTop: 10,
   },
   statusText: {
     fontSize: 14,
